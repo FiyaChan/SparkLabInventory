@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Flow Diagram (DFD) & Data Dictionary — Inventory & POS System</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --surface: #ffffff;
+            --bg: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --badge-pk: #fef3c7;
+            --badge-pk-text: #b45309;
+            --badge-fk: #e0f2fe;
+            --badge-fk-text: #0369a1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 3rem 2rem 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.025em;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        h2.section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        .diagram-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        table.data-table th {
+            background: #1e293b;
+            color: #ffffff;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+        }
+
+        table.data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: #334155;
+        }
+
+        table.data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        table.data-table tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pk {
+            background-color: var(--badge-pk);
+            color: var(--badge-pk-text);
+        }
+
+        .badge-fk {
+            background-color: var(--badge-fk);
+            color: var(--badge-fk-text);
+        }
+
+        .badge-unique {
+            background-color: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .badge-index {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+            .header-bar {
+                background: #ffffff;
+                color: #000000;
+                padding: 1rem 0;
+            }
+            .header-title {
+                color: #000000;
+            }
+            .header-subtitle {
+                color: #555555;
+            }
+            .action-bar {
+                display: none !important;
+            }
+            .section-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-bar">
+        <div class="container">
+            <h1 class="header-title">📊 System Data Flow Diagrams & Data Dictionary</h1>
+            <p class="header-subtitle">Inventory Management, Point of Sale (POS), and Storefront Commerce System</p>
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save to PDF</button>
+                <a href="./Inventory_Data_Dictionary.xlsx" class="btn btn-secondary" download>📥 Download Excel (.xlsx)</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- SECTION 1: CONTEXT DIAGRAM (LEVEL 0) -->
+        <section class="section-card">
+            <h2 class="section-title">1. DFD Level 0 — Context Diagram</h2>
+            <p style="color: var(--text-muted);">High-level abstraction showing the boundary of the system and interaction with external entities.</p>
+            <div class="diagram-box">
+                <div class="mermaid">
+flowchart TD
+    E1["👤 Online Customer"]
+    E2["🧑‍💼 Cashier / Staff"]
+    E3["🛡️ Administrator"]
+    E4["💳 Payment Gateway"]
+    E5["✉️ Notification Service"]
+
+    SYS(("0.0<br/><b>Inventory & POS<br/>Management System</b>"))
+
+    E1 -- "Registration & Credentials<br/>Cart & Wishlist Actions<br/>Checkout & Payment Request" --> SYS
+    SYS -- "Catalog & Product Details<br/>Order Invoices & Status Tracking" --> E1
+
+    E2 -- "POS Item Lookup & Sale<br/>Stock In / Adjustment Notes" --> SYS
+    SYS -- "POS Thermal Receipts<br/>Low Stock Notifications" --> E2
+
+    E3 -- "Catalog & Category Setup<br/>User & Role Access Controls<br/>Order Status Updates" --> SYS
+    SYS -- "Analytics, Reports & Audit Trail" --> E3
+
+    SYS -- "Payment Authorization Request" --> E4
+    E4 -- "Transaction Reference / Status" --> SYS
+
+    SYS -- "Email Verifications & Stock Alerts" --> E5
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1.5: DEDICATED E-COMMERCE CUSTOMER JOURNEY FLOW -->
+        <section class="section-card" style="border-left: 4px solid #3b82f6;">
+            <h2 class="section-title">🛒 End-to-End E-Commerce Customer Flow</h2>
+            <p style="color: var(--text-muted);">Detailed sequence of the customer shopping experience, atomic transaction safety, and order fulfillment.</p>
+            <div class="diagram-box">
+                <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Customer as 👤 Customer
+    participant Shop as 🛍️ Catalog (/shop)
+    participant Cart as 🛒 Cart (/cart)
+    participant Checkout as 💳 Checkout (/checkout)
+    participant DB as 🗄️ Database & Locks
+    participant Ledger as 📦 Stock Ledger
+    participant Orders as 📄 Orders & Invoices
+
+    Note over Customer,Shop: Step 1: Browsing & Discovery
+    Customer->>Shop: Browse products / Filter by Category
+    Shop-->>Customer: Return active products & thumbnails
+
+    Customer->>Shop: View Product Details & Select Variation
+    Shop-->>Customer: Display price, images & stock status
+
+    Note over Customer,Cart: Step 2: Cart & Wishlist
+    Customer->>Cart: Add Product to Cart / Wishlist
+    Cart->>DB: INSERT / UPDATE cart_items
+    Cart-->>Customer: Return Cart Summary & Subtotal
+
+    Note over Customer,Checkout: Step 3: Checkout & Order Submission
+    Customer->>Checkout: Proceed to Checkout & Enter Shipping Info
+    Checkout->>Customer: Render Review & Select Payment (COD / Online)
+    Customer->>Checkout: Click "Place Order" (Submit Checkout)
+
+    Note over Checkout,Ledger: Step 4: Atomic Transaction (DB::transaction)
+    Checkout->>DB: lockForUpdate() on products table
+    DB-->>Checkout: Confirm Live Active Price & Available Stock
+    Checkout->>DB: INSERT into orders (status: 'pending', source: 'web')
+    Checkout->>DB: INSERT into order_items (price snapshot)
+    Checkout->>Ledger: Decrement quantity_on_hand & INSERT stock_movements ('stock_out')
+    Checkout->>DB: INSERT into payments (method, status, amount)
+    Checkout->>Cart: Empty cart_items for user
+    Checkout->>DB: INSERT activity_logs ('order.placed')
+
+    Note over Customer,Orders: Step 5: Fulfillment & Invoicing
+    Checkout-->>Customer: Redirect to /orders/{id} (Order Success)
+    Customer->>Orders: Download PDF Invoice (/orders/{id}/invoice)
+    Orders-->>Customer: Stream Branded PDF Invoice
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SYSTEM DECOMPOSITION (LEVEL 1) -->
+        <section class="section-card">
+            <h2 class="section-title">2. DFD Level 1 — System Decomposition Diagram</h2>
+            <p style="color: var(--text-muted);">Decomposition of the system into 7 major core processes and their interactions with database data stores.</p>
+            <div class="diagram-box">
+                <div class="mermaid">
+flowchart TB
+    E1["👤 Customer"]
+    E2["🧑‍💼 Cashier / Staff"]
+    E3["🛡️ Administrator"]
+    E4["💳 Payment Gateway"]
+    E5["✉️ Notification Service"]
+
+    D1[("D1: Users & Security")]
+    D2[("D2: Roles & Permissions")]
+    D3[("D3: Products & Categories")]
+    D4[("D4: Inventory & Stock Ledger")]
+    D5[("D5: Carts & Wishlists")]
+    D6[("D6: Orders & Order Items")]
+    D7[("D7: Payments")]
+    D8[("D8: Logs & Notifications")]
+
+    P1(("1.0<br/>Auth & Access"))
+    P2(("2.0<br/>Catalog Mgmt"))
+    P3(("3.0<br/>Inventory & Stock"))
+    P4(("4.0<br/>Cart & Wishlist"))
+    P5(("5.0<br/>Order & POS"))
+    P6(("6.0<br/>Payment Processing"))
+    P7(("7.0<br/>Reports & Audit"))
+
+    E1 & E2 & E3 -->|"Credentials & MFA"| P1
+    P1 <-->|"Verify User"| D1
+    P1 <-->|"Check Roles"| D2
+    P1 -->|"Log Activity"| D8
+
+    E3 -->|"Product & Variation CRUD"| P2
+    P2 <-->|"Catalog Data"| D3
+    P2 -->|"Catalog Browsing"| E1
+    P2 -->|"Product Scanning"| E2
+
+    E2 & E3 -->|"Stock-in / Recount"| P3
+    P3 <-->|"Live Stock & Thresholds"| D4
+    P3 -->|"Append Stock Ledger"| D4
+    P3 -->|"Low Stock Alerts"| E5
+
+    E1 -->|"Add/Remove Item"| P4
+    P4 <-->|"Fetch Prices"| D3
+    P4 <-->|"Cart Storage"| D5
+    P4 -->|"Cart Totals"| E1
+
+    E1 -->|"Web Checkout"| P5
+    E2 -->|"POS Cashier Sale"| P5
+    E3 -->|"Fulfillment Update"| P5
+    P5 <-->|"Retrieve Cart"| D5
+    P5 -->|"Save Order & Items"| D6
+    P5 -->|"Trigger Stock Deduction"| P3
+    P5 -->|"Order Confirmation"| E1
+
+    P5 -->|"Initiate Payment"| P6
+    P6 <-->|"Payment Settlement"| E4
+    P6 -->|"Payment Record"| D7
+    P6 -->|"PDF Invoice / Receipt"| E1 & E2
+
+    E3 -->|"Query Analytics"| P7
+    P7 <-->|"Query Sales & Margins"| D6 & D3 & D4
+    P7 <-->|"Query Payments"| D7
+    P7 <-->|"Query Security Logs"| D8
+    P7 -->|"Render Dashboard & Exports"| E3
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SUBSYSTEM LEVEL 2 DIAGRAMS -->
+        <section class="section-card">
+            <h2 class="section-title">3. DFD Level 2 — Subsystem Deep-Dives</h2>
+            
+            <h3 style="color: #1e293b; margin-top: 1.5rem;">3.1 Subsystem 5.0: Order Processing & POS Cashier Flow</h3>
+            <div class="diagram-box">
+                <div class="mermaid">
+flowchart TD
+    CUST["Online Customer"]
+    CASH["POS Cashier"]
+
+    P51(("5.1<br/>Validate Cart /<br/>POS Items"))
+    P52(("5.2<br/>Check Stock<br/>Availability"))
+    P53(("5.3<br/>Create Order<br/>& Item Snapshots"))
+    P54(("5.4<br/>Execute Stock<br/>Deduction"))
+    P55(("5.5<br/>Clear Cart &<br/>Issue Receipt"))
+
+    D3[("D3: Products & Variations")]
+    D4[("D4: Inventory & Movements")]
+    D5[("D5: Carts")]
+    D6[("D6: Orders & Items")]
+    D8[("D8: Logs & Notifications")]
+
+    CUST -->|"Submit Web Checkout"| P51
+    CASH -->|"Submit POS Cart"| P51
+
+    P51 <-->|"Fetch Prices & Active Variants"| D3
+    P51 -->|"Validated Items"| P52
+
+    P52 <-->|"Check quantity_on_hand"| D4
+    P52 -->|"Stock Confirmed"| P53
+
+    P53 -->|"Write Order Header (web/pos)"| D6
+    P53 -->|"Snapshot unit_price & variation_id"| D6
+    P53 -->|"Order Created"| P54
+
+    P54 -->|"Decrement quantity_on_hand"| D4
+    P54 -->|"Append stock_movements ledger"| D4
+    P54 -->|"Complete"| P55
+
+    P55 -->|"Empty User Cart"| D5
+    P55 -->|"Write Activity Log"| D8
+    P55 -->|"Order Confirmation & Invoice"| CUST
+    P55 -->|"Print POS Receipt"| CASH
+                </div>
+            </div>
+
+            <h3 style="color: #1e293b; margin-top: 2rem;">3.2 Subsystem 3.0: Inventory & Stock Movement Ledger</h3>
+            <div class="diagram-box">
+                <div class="mermaid">
+flowchart TD
+    USER["Staff / Admin"]
+
+    P31(("3.1<br/>Receive Stock<br/>Adjustment"))
+    P32(("3.2<br/>Verify Product &<br/>Permissions"))
+    P33(("3.3<br/>Update Live<br/>Quantity on Hand"))
+    P34(("3.4<br/>Append Immutable<br/>Ledger Entry"))
+    P35(("3.5<br/>Check Reorder<br/>Level Threshold"))
+
+    D2[("D2: Permissions")]
+    D3[("D3: Products")]
+    D4A[("D4: inventory")]
+    D4B[("D4: stock_movements")]
+    D8[("D8: Notifications")]
+    ALERT["Mail / In-App Alert"]
+
+    USER -->|"Stock-in / Damaged / Restock"| P31
+    P31 -->|"Check 'inventory.adjust'"| P32
+    P32 <-->|"Authorize"| D2
+    P32 <-->|"Verify Product Exists"| D3
+    P32 -->|"Authorized Delta"| P33
+
+    P33 <-->|"Update quantity_on_hand"| D4A
+    P33 -->|"Record Transaction"| P34
+
+    P34 -->|"INSERT stock_movements (type, qty, reason)"| D4B
+    P34 -->|"Check Level"| P35
+
+    P35 <-->|"quantity_on_hand <= reorder_level"| D4A
+    P35 -- "If Low Stock" --> D8
+    D8 -->|"Dispatch Notification"| ALERT
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DATA FLOW SPECIFICATIONS -->
+        <section class="section-card">
+            <h2 class="section-title">4. Data Flow Specifications</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Flow Name</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Key Data Attributes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>User Credentials & MFA</strong></td>
+                        <td>Customer / Staff</td>
+                        <td>Process 1.0</td>
+                        <td><code>email</code>, <code>password</code>, <code>mfa_token</code>, <code>remember_me</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Catalog Query & Response</strong></td>
+                        <td>Process 2.0</td>
+                        <td>Customer / Staff</td>
+                        <td><code>category_id</code>, <code>sku</code>, <code>name</code>, <code>price</code>, <code>variations[]</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cart Modification</strong></td>
+                        <td>Customer</td>
+                        <td>Process 4.0</td>
+                        <td><code>user_id</code>, <code>product_id</code>, <code>variation_id</code>, <code>quantity</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Placement Payload</strong></td>
+                        <td>Customer / Cashier</td>
+                        <td>Process 5.0</td>
+                        <td><code>user_id</code>, <code>source</code> ('web'/'pos'), <code>shipping_info</code>, <code>items[]</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stock Movement Ledger Entry</strong></td>
+                        <td>Process 3.0 / 5.0</td>
+                        <td><code>stock_movements</code></td>
+                        <td><code>product_id</code>, <code>type</code> ('stock_in'/'stock_out'/'adjustment'), <code>quantity</code>, <code>reason</code>, <code>performed_by</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment Settlement Payload</strong></td>
+                        <td>Process 5.0 / Gateway</td>
+                        <td>Process 6.0</td>
+                        <td><code>order_id</code>, <code>method</code>, <code>amount</code>, <code>status</code>, <code>transaction_ref</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Activity Record</strong></td>
+                        <td>All Processes</td>
+                        <td><code>activity_logs</code></td>
+                        <td><code>user_id</code>, <code>action</code>, <code>ip_address</code>, <code>user_agent</code>, <code>description</code> (JSON)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                curve: 'basis',
+                useMaxWidth: true
+            }
+        });
+    </script>
+</body>
+</html>

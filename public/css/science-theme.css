@@ -1,0 +1,581 @@
+/* ==========================================================================
+   SparkLab Kids Science Experiment Theme
+   Bright, Vibrant, Playful & High-Contrast Purple STEM Adventure
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+    --sci-font-body: 'Plus Jakarta Sans', sans-serif;
+    --sci-font-heading: 'Space Grotesk', sans-serif;
+    --sci-font-fun: 'Fredoka', cursive, sans-serif;
+
+    /* Bright, Clean & Playful Backgrounds */
+    --sci-bg-body: #F8F5FF;
+    --sci-bg-surface: #FFFFFF;
+    --sci-bg-card: #FFFFFF;
+    --sci-bg-card-hover: #FFFFFF;
+    --sci-bg-soft: #F3E8FF;
+    --sci-bg-accent: #EDE9FE;
+
+    /* Vibrant Purple & Playful STEM Colors */
+    --sci-purple-dark: #3B0764;
+    --sci-purple-primary: #7E22CE;
+    --sci-purple-vibrant: #9333EA;
+    --sci-purple-light: #A855F7;
+    --sci-lavender: #C084FC;
+    --sci-pink: #EC4899;
+    --sci-cyan: #0284C7;
+    --sci-emerald: #059669;
+    --sci-amber: #D97706;
+    --sci-orange: #EA580C;
+
+    /* Crisp High-Contrast Typography */
+    --sci-text-dark: #1E1B4B;       /* Deep rich indigo-purple for headings */
+    --sci-text-title: #2E1065;      /* Dark purple */
+    --sci-text-body: #334155;       /* Crisp charcoal for body text */
+    --sci-text-muted: #64748B;      /* Clear slate for helper text */
+    --sci-text-light: #FAF5FF;
+
+    /* Borders & Shadows */
+    --sci-border: #E9D5FF;
+    --sci-border-bold: #D8B4FE;
+    --sci-border-active: #9333EA;
+    --sci-radius: 18px;
+    --sci-radius-sm: 12px;
+    --sci-radius-lg: 24px;
+    --sci-shadow-card: 0 10px 25px -5px rgba(126, 34, 206, 0.08), 0 8px 10px -6px rgba(126, 34, 206, 0.04);
+    --sci-shadow-hover: 0 20px 30px -10px rgba(147, 51, 234, 0.22), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+body.sci-theme {
+    font-family: var(--sci-font-body);
+    background-color: var(--sci-bg-body);
+    background-image: 
+        radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 15%, rgba(236, 72, 153, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(147, 51, 234, 0.06) 0%, transparent 50%),
+        linear-gradient(rgba(147, 51, 234, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(147, 51, 234, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    color: var(--sci-text-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .sci-heading {
+    font-family: var(--sci-font-heading);
+    color: var(--sci-text-dark);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.sci-fun-font {
+    font-family: var(--sci-font-fun);
+    letter-spacing: 0.01em;
+}
+
+/* Announcement Top Ticker */
+.sci-announcement-ticker {
+    background: linear-gradient(90deg, #581C87 0%, #7E22CE 50%, #9333EA 100%);
+    color: #FFFFFF;
+    padding: 0.55rem 1rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(88, 28, 135, 0.2);
+}
+
+.sci-pulse-dot {
+    width: 9px;
+    height: 9px;
+    background-color: #FDE047;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #FDE047;
+    animation: sci-pulse 1.8s infinite;
+}
+
+@keyframes sci-pulse {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Science Navbar (Crisp Vibrant Header) */
+.sci-navbar {
+    background: #FFFFFF;
+    border-bottom: 2px solid #EDE9FE;
+    padding: 0.85rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+    box-shadow: 0 4px 20px rgba(126, 34, 206, 0.06);
+}
+
+.sci-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--sci-text-title);
+    text-decoration: none;
+    font-family: var(--sci-font-heading);
+    font-weight: 800;
+    font-size: 1.3rem;
+    transition: transform 0.2s ease;
+}
+
+.sci-brand:hover {
+    color: var(--sci-purple-vibrant);
+    transform: scale(1.02);
+}
+
+.sci-logo-flask {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #9333EA, #EC4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+}
+
+.sci-user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7E22CE, #EC4899);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 2px solid #EDE9FE;
+    box-shadow: 0 2px 8px rgba(126, 34, 206, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.sci-user-avatar:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+}
+
+.dropdown-toggle.no-caret::after {
+    display: none !important;
+}
+
+/* Search Bar (Clean High-Contrast) */
+.sci-search-container {
+    position: relative;
+    max-width: 460px;
+    width: 100%;
+}
+
+.sci-search-input {
+    background: #F8F5FF;
+    border: 2px solid #E9D5FF;
+    color: #1E1B4B;
+    font-weight: 500;
+    border-radius: 9999px;
+    padding: 0.55rem 1.25rem 0.55rem 2.6rem;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    width: 100%;
+}
+
+.sci-search-input:focus {
+    background: #FFFFFF;
+    border-color: var(--sci-purple-vibrant);
+    box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.15);
+    color: #1E1B4B;
+    outline: none;
+}
+
+.sci-search-input::placeholder {
+    color: #8B5CF6;
+    opacity: 0.75;
+}
+
+.sci-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9333EA;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+/* Navigation Links */
+.sci-nav-link {
+    color: #4C1D95;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--sci-radius-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.sci-nav-link:hover {
+    color: #7E22CE;
+    background: #F3E8FF;
+}
+
+.sci-nav-link.active {
+    color: #7E22CE;
+    background: #EDE9FE;
+}
+
+/* Clean, Bright, High-Contrast Cards */
+.sci-card {
+    background: #FFFFFF;
+    border: 1px solid #E9D5FF;
+    border-radius: var(--sci-radius);
+    box-shadow: var(--sci-shadow-card);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.sci-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #9333EA, #EC4899, #FBBF24);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sci-card:hover {
+    border-color: #C084FC;
+    transform: translateY(-4px);
+    box-shadow: var(--sci-shadow-hover);
+}
+
+.sci-card:hover::before {
+    opacity: 1;
+}
+
+/* High-Contrast Badges */
+.sci-badge {
+    font-family: var(--sci-font-heading);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 0.4em 0.95em;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 4px rgba(126, 34, 206, 0.05);
+}
+
+.sci-badge-purple {
+    background: #F3E8FF;
+    color: #581C87;
+    border: 1.5px solid #C084FC;
+}
+
+.sci-badge-pink {
+    background: #FCE7F3;
+    color: #831843;
+    border: 1.5px solid #F472B6;
+}
+
+.sci-badge-cyan {
+    background: #E0F2FE;
+    color: #075985;
+    border: 1.5px solid #38BDF8;
+}
+
+.sci-badge-emerald {
+    background: #D1FAE5;
+    color: #064E3B;
+    border: 1.5px solid #34D399;
+}
+
+.sci-badge-amber {
+    background: #FEF3C7;
+    color: #78350F;
+    border: 1.5px solid #FBBF24;
+}
+
+.sci-badge-danger {
+    background: #FFE4E6;
+    color: #881337;
+    border: 1.5px solid #FB7185;
+}
+
+/* Category Pills (High Contrast & Clear) */
+.sci-category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.25rem;
+    background: #FFFFFF;
+    border: 2px solid #D8B4FE;
+    color: #4C1D95;
+    text-decoration: none;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(126, 34, 206, 0.06);
+}
+
+.sci-category-pill:hover {
+    background: #F3E8FF;
+    border-color: #9333EA;
+    color: #581C87;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15);
+}
+
+.sci-category-pill.active {
+    background: linear-gradient(135deg, #7E22CE 0%, #9333EA 100%);
+    border-color: #7E22CE;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 16px rgba(126, 34, 206, 0.35);
+    transform: translateY(-2px);
+}
+
+.sci-category-pill.active i {
+    color: #FDE047 !important;
+}
+
+/* Vibrant Buttons */
+.btn-sci-primary {
+    background: linear-gradient(135deg, #7E22CE 0%, #9333EA 50%, #EC4899 100%);
+    color: #FFFFFF !important;
+    font-family: var(--sci-font-heading);
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--sci-radius-sm);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 16px rgba(147, 51, 234, 0.35);
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
+
+.btn-sci-primary:hover {
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(236, 72, 153, 0.45);
+}
+
+.btn-sci-outline {
+    background: #FFFFFF;
+    border: 2px solid #9333EA;
+    color: #6B21A8;
+    font-family: var(--sci-font-heading);
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: var(--sci-radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(126, 34, 206, 0.08);
+}
+
+.btn-sci-outline:hover {
+    background: linear-gradient(135deg, #7E22CE, #9333EA);
+    color: #FFFFFF !important;
+    border-color: #7E22CE;
+    box-shadow: 0 4px 16px rgba(126, 34, 206, 0.25);
+    transform: translateY(-2px);
+}
+
+.btn-sci-secondary {
+    background: #F3E8FF;
+    border: 1px solid #D8B4FE;
+    color: #581C87;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--sci-radius-sm);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-sci-secondary:hover {
+    background: #EDE9FE;
+    border-color: #A855F7;
+    color: #3B0764;
+}
+
+/* Price Tag */
+.sci-price {
+    font-family: var(--sci-font-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #7E22CE;
+}
+
+/* High-Contrast Clear Form Inputs */
+.sci-form-control, .sci-form-select {
+    background: #FFFFFF !important;
+    border: 2px solid #E9D5FF !important;
+    color: #1E1B4B !important;
+    font-weight: 600 !important;
+    border-radius: var(--sci-radius-sm) !important;
+    padding: 0.65rem 0.95rem;
+    font-size: 0.92rem !important;
+}
+
+.sci-form-control.ps-5 {
+    padding-left: 2.75rem !important;
+}
+
+.sci-form-control:focus, .sci-form-select:focus {
+    border-color: var(--sci-purple-vibrant) !important;
+    box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.15) !important;
+    outline: none !important;
+}
+
+.sci-form-control::placeholder {
+    color: #94A3B8 !important;
+    font-weight: 400 !important;
+}
+
+.sci-form-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #2E1065;
+    margin-bottom: 0.4rem;
+}
+
+/* Tables (High Contrast) */
+.sci-table {
+    color: #1E293B;
+    margin-bottom: 0;
+}
+
+.sci-table th {
+    font-family: var(--sci-font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4C1D95;
+    background-color: #F8F5FF;
+    border-bottom: 2px solid #E9D5FF;
+    padding: 0.95rem 1rem;
+}
+
+.sci-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+    background-color: transparent;
+    color: #1E293B;
+    font-weight: 500;
+}
+
+.sci-table tbody tr:hover td {
+    background-color: #FAF5FF;
+}
+
+/* Alerts */
+.sci-alert {
+    border-radius: var(--sci-radius-sm);
+    padding: 0.95rem 1.35rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.sci-alert-success {
+    background: #ECFDF5;
+    border: 2px solid #A7F3D0;
+    color: #065F46;
+}
+
+.sci-alert-danger {
+    background: #FFF1F2;
+    border: 2px solid #FECDD3;
+    color: #9F1239;
+}
+
+.sci-alert-info {
+    background: #F3E8FF;
+    border: 2px solid #D8B4FE;
+    color: #581C87;
+}
+
+/* Glass & Solid Info Panels */
+.sci-glass-panel {
+    background: #FFFFFF;
+    border: 1px solid #E9D5FF;
+    border-radius: var(--sci-radius);
+    padding: 1.75rem;
+    box-shadow: var(--sci-shadow-card);
+}
+
+/* Science Footer (High-Contrast Rich Deep Purple) */
+.sci-footer {
+    background: #1E0B38;
+    border-top: 4px solid #9333EA;
+    padding: 3.5rem 1.5rem 1.5rem 1.5rem;
+    margin-top: auto;
+    color: #E9D5FF;
+    font-size: 0.88rem;
+}
+
+.sci-footer-title {
+    color: #FFFFFF;
+    font-family: var(--sci-font-heading);
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sci-footer p {
+    color: #D8B4FE;
+    line-height: 1.6;
+}
+
+.sci-footer a {
+    color: #FAF5FF;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.sci-footer a:hover {
+    color: #FDE047;
+}
+
+.hover-purple:hover {
+    color: #7E22CE !important;
+}
