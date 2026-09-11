@@ -4,8 +4,9 @@
  * Vercel Serverless Entry Point for Laravel
  */
 
-// 1. Prepare temporary directories for serverless environment (Vercel filesystem is read-only except /tmp)
+// 1. Prepare temporary storage directory tree on /tmp (Vercel filesystem is read-only)
 $tmpDirs = [
+    '/tmp/storage/app/public',
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/cache',
@@ -19,17 +20,27 @@ foreach ($tmpDirs as $dir) {
     }
 }
 
-// 2. Set serverless environment cache paths
-putenv('APP_CONFIG_CACHE=/tmp/config.php');
-putenv('APP_EVENTS_CACHE=/tmp/events.php');
-putenv('APP_PACKAGES_CACHE=/tmp/packages.php');
-putenv('APP_ROUTES_CACHE=/tmp/routes.php');
-putenv('APP_SERVICES_CACHE=/tmp/services.php');
-putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
-putenv('LOG_CHANNEL=stderr');
+// 2. Set serverless environment variables
+$envOverrides = [
+    'VERCEL' => '1',
+    'APP_CONFIG_CACHE' => '/tmp/config.php',
+    'APP_EVENTS_CACHE' => '/tmp/events.php',
+    'APP_PACKAGES_CACHE' => '/tmp/packages.php',
+    'APP_ROUTES_CACHE' => '/tmp/routes.php',
+    'APP_SERVICES_CACHE' => '/tmp/services.php',
+    'VIEW_COMPILED_PATH' => '/tmp/storage/framework/views',
+    'LOG_CHANNEL' => 'stderr',
+    'CACHE_STORE' => 'array',
+];
 
-// 3. Fallback SQLite in /tmp for standalone demonstration if no remote DB is configured
-if (getenv('DB_CONNECTION') === 'sqlite' || ! getenv('DB_CONNECTION')) {
+foreach ($envOverrides as $key => $value) {
+    putenv("{$key}={$value}");
+    $_ENV[$key] = $value;
+    $_SERVER[$key] = $value;
+}
+
+// 3. Fallback SQLite in /tmp for standalone demonstration
+if (getenv('DB_CONNECTION') === 'sqlite' || ! getenv('DB_CONNECTION') || (isset($_ENV['DB_CONNECTION']) && $_ENV['DB_CONNECTION'] === 'sqlite')) {
     $sourceSqlite = __DIR__ . '/../database/database.sqlite';
     $targetSqlite = '/tmp/database.sqlite';
 

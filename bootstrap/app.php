@@ -32,3 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
     })->create();
+
+// Automatically redirect storage path to /tmp on serverless read-only filesystems (e.g. Vercel)
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || env('VERCEL') || ! is_writable(storage_path())) {
+    $app->useStoragePath('/tmp/storage');
+}
+
+return $app;
