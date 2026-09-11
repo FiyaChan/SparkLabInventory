@@ -155,8 +155,11 @@
         <div class="header text-center">
             <div class="store-name">{{ config('app.name', 'SparkLab Kids Science') }}</div>
             <div class="store-tagline">Retail & Educational Inventory</div>
-            <div style="font-size: 10px; color: #444;">Lot 4.12, Discovery Mall, Kuala Lumpur</div>
-            <div style="font-size: 10px; color: #444;">Tel: +60 3-8888 1234 &bull; Reg: 202601009988</div>
+            <div style="font-size: 10px; color: #444;">Lot 4.12, Discovery Mall, Putrajaya</div>
+            <div style="font-size: 9px; color: #444;">Tel: +60 3-8888 1234 &bull; SSM/BRN: 202601009988</div>
+            @if($order->eInvoice)
+                <div style="font-size: 9px; font-weight: bold; margin-top: 2px;">Supplier TIN: {{ $order->eInvoice->supplier_tin }} | MSIC: {{ $order->eInvoice->supplier_msic_code }}</div>
+            @endif
         </div>
 
         <!-- Meta Details -->
@@ -165,6 +168,12 @@
                 <span>Receipt #:</span>
                 <span class="fw-bold">{{ $order->order_number }}</span>
             </div>
+            @if($order->eInvoice)
+                <div class="meta-row">
+                    <span>LHDN e-Inv #:</span>
+                    <span class="fw-bold" style="font-size: 10px;">{{ $order->eInvoice->invoice_number }}</span>
+                </div>
+            @endif
             <div class="meta-row">
                 <span>Date/Time:</span>
                 <span>{{ $order->created_at->format('d/m/Y H:i:s') }}</span>
@@ -177,6 +186,12 @@
                 <span>Customer:</span>
                 <span>{{ $order->shipping_name ?? 'Walk-in Customer' }}</span>
             </div>
+            @if($order->eInvoice)
+                <div class="meta-row">
+                    <span>Buyer TIN:</span>
+                    <span>{{ $order->eInvoice->buyer_tin }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Itemized List -->
@@ -224,7 +239,7 @@
                 </div>
             @endif
             <div class="total-row">
-                <span>Tax (0% SST):</span>
+                <span>Tax (0% Tax Exempt):</span>
                 <span>RM 0.00</span>
             </div>
             <div class="total-row grand-total-row">
@@ -260,6 +275,20 @@
                 </div>
             @endif
         </div>
+
+        <!-- LHDN MyInvois QR Code & Digital Verification Section -->
+        @if($order->eInvoice)
+            <div style="border: 1px dashed #000; border-radius: 4px; padding: 6px; margin-bottom: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: bold; letter-spacing: 0.04em;">🇲🇾 LHDN MyInvois Digital Validation</div>
+                <div style="font-size: 8px; color: #555; margin-top: 1px;">UUID: {{ $order->eInvoice->irbm_unique_id }}</div>
+                
+                <div style="margin: 6px auto; display: inline-block; background: #fff; padding: 4px;">
+                    <img src="{{ $order->eInvoice->getQrCodeDataUri(110) }}" alt="LHDN QR Code" style="width: 105px; height: 105px; display: block; margin: 0 auto;">
+                </div>
+
+                <div style="font-size: 8px; color: #444;">Scan with smartphone camera to verify official e-Invoice validity</div>
+            </div>
+        @endif
 
         <!-- Barcode / Footer -->
         <div class="footer text-center">

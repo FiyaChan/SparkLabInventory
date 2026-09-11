@@ -20,6 +20,11 @@ use RuntimeException;
 
 class PosService
 {
+    public function __construct(protected ?EInvoiceService $eInvoiceService = null)
+    {
+        $this->eInvoiceService = $eInvoiceService ?? app(EInvoiceService::class);
+    }
+
     /**
      * Process a complete Point of Sale transaction with concurrency locking,
      * server-authoritative pricing, stock deduction, and payment capture.
@@ -184,6 +189,10 @@ class PosService
                 'shipping_name' => $customerName,
                 'shipping_phone' => $customerPhone,
                 'shipping_address' => 'POS Counter Direct Sale',
+                'buyer_tin' => ! empty($data['buyer_tin']) ? $data['buyer_tin'] : ($customer->tin ?? 'EI00000000020'),
+                'buyer_id_type' => ! empty($data['buyer_id_type']) ? $data['buyer_id_type'] : ($customer->id_type ?? 'GENERAL_PUBLIC'),
+                'buyer_id_number' => ! empty($data['buyer_id_number']) ? $data['buyer_id_number'] : ($customer->id_number ?? '000000000000'),
+                'buyer_sst_no' => ! empty($data['buyer_sst_no']) ? $data['buyer_sst_no'] : ($customer->sst_number ?? null),
             ]);
 
             // Step 7: Create Order Items & Deduct Inventory
@@ -232,10 +241,28 @@ class PosService
                 'amount' => $grandTotal,
             ]);
 
-            // Step 9: Audit Trail
+            // Step 9: Generate LHDN e-Invoice automatically
+            $eInvoice = null;
+            try {
+                $eInvoice = $this->eInvoiceService->generateForOrder($order, [
+                    'buyer_tin' => $order->buyer_tin,
+                    'buyer_id_type' => $order->buyer_id_type,
+                    'buyer_id_value' => $order->buyer_id_number,
+                    'buyer_sst_no' => $order->buyer_sst_no,
+                    'buyer_name' => $customerName,
+                    'buyer_phone' => $customerPhone,
+                    'buyer_email' => $customer->email,
+                ]);
+            } catch (Exception $e) {
+                Log::warning('Automatic POS e-Invoice generation notice: ' . $e->getMessage(), ['order_id' => $order->id]);
+            }
+
+            // Step 10: Audit Trail
             ActivityLog::record('pos.order_completed', [
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
+                'einvoice_number' => $eInvoice ? $eInvoice->invoice_number : null,
+                'irbm_unique_id' => $eInvoice ? $eInvoice->irbm_unique_id : null,
                 'total' => $order->total_amount,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
@@ -247,7 +274,8 @@ class PosService
             ]);
 
             return [
-                'order' => $order->fresh(['items.product', 'payment', 'user']),
+                'order' => $order->fresh(['items.product', 'payment', 'user', 'eInvoice']),
+                'e_invoice' => $eInvoice,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
                 'grand_total' => $grandTotal,

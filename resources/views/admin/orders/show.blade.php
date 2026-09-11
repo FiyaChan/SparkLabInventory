@@ -107,18 +107,32 @@
             <div class="admin-card-body">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted small">Method:</span>
-                    <span class="fw-semibold small">{{ $order->payment->method === 'cod' ? 'Cash on Delivery (COD)' : 'Online Simulation' }}</span>
+                    <span class="fw-semibold small">
+                        @if (($order->payment->method ?? '') === 'toyyibpay')
+                            ToyyibPay (FPX Online Banking)
+                        @elseif (($order->payment->method ?? '') === 'cod')
+                            Cash on Delivery (COD)
+                        @elseif (($order->payment->method ?? '') === 'online_simulation')
+                            Online Simulation
+                        @elseif (($order->payment->method ?? '') === 'cash')
+                            Cash (POS)
+                        @elseif (($order->payment->method ?? '') === 'qr')
+                            QR Payment (POS)
+                        @else
+                            {{ ucfirst($order->payment->method ?? 'N/A') }}
+                        @endif
+                    </span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="text-muted small">Payment Status:</span>
-                    <span class="admin-badge {{ ($order->payment->status ?? '') === 'paid' ? 'success' : 'warning' }}">
+                    <span class="admin-badge {{ ($order->payment->status ?? '') === 'paid' ? 'success' : (($order->payment->status ?? '') === 'failed' ? 'danger' : 'warning') }}">
                         {{ ucfirst($order->payment->status ?? 'pending') }}
                     </span>
                 </div>
-                @if($order->payment?->transaction_reference)
+                @if($order->payment?->transaction_ref ?? $order->payment?->transaction_reference ?? null)
                     <div class="pt-2 border-top">
-                        <span class="text-muted small d-block">Transaction Ref:</span>
-                        <code class="small text-dark">{{ $order->payment->transaction_reference }}</code>
+                        <span class="text-muted small d-block">Transaction / Bill Ref:</span>
+                        <code class="small text-dark">{{ $order->payment->transaction_ref ?? $order->payment->transaction_reference }}</code>
                     </div>
                 @endif
             </div>

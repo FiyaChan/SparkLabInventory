@@ -44,6 +44,39 @@
                     @error('address')<div class="invalid-feedback text-danger small">{{ $message }}</div>@enderror
                 </div>
 
+                <!-- LHDN Tax Identification Section -->
+                <div class="mb-4 p-3 rounded-3" style="background: #F8F5FF; border: 1.5px solid #E9D5FF;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold small" style="color: #7E22CE;"><i class="bi bi-shield-check me-1"></i>Maklumat e-Invois LHDN (Pelepasan Cukai)</span>
+                        <span class="badge bg-purple-subtle text-purple border" style="font-size: 0.68rem;">MyInvois</span>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label for="tin" class="form-label small fw-semibold">No. TIN Cukai</label>
+                            <input type="text" class="form-control form-control-sm" id="tin" name="tin" 
+                                   value="{{ old('tin', $user->tin) }}" placeholder="cth. IG12345678090">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_type" class="form-label small fw-semibold">Jenis Pengenalan</label>
+                            <select class="form-select form-select-sm" id="id_type" name="id_type">
+                                <option value="NRIC" @selected(old('id_type', $user->id_type) === 'NRIC')>MyKad / Kad Pengenalan</option>
+                                <option value="BRN" @selected(old('id_type', $user->id_type) === 'BRN')>No. SSM / Syarikat</option>
+                                <option value="PASSPORT" @selected(old('id_type', $user->id_type) === 'PASSPORT')>Pasport</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_number" class="form-label small fw-semibold">No. Pengenalan (IC/Passport)</label>
+                            <input type="text" class="form-control form-control-sm" id="id_number" name="id_number" 
+                                   value="{{ old('id_number', $user->id_number) }}" placeholder="cth. 920512-10-5544">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sst_number" class="form-label small fw-semibold">No. SST (Pilihan)</label>
+                            <input type="text" class="form-control form-control-sm" id="sst_number" name="sst_number" 
+                                   value="{{ old('sst_number', $user->sst_number) }}" placeholder="cth. W10-1808-31000000">
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-sci-primary">
                     <i class="bi bi-check2-circle me-1"></i>Save Profile Information
                 </button>

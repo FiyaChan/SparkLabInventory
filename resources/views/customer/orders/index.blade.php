@@ -58,8 +58,16 @@
                                         <span class="sci-badge sci-badge-purple">{{ ucfirst($order->status) }}</span>
                                 @endswitch
                             </td>
-                            <td class="small text-muted">
-                                {{ ($order->payment->method ?? '') === 'cod' ? 'Cash on Delivery (COD)' : 'Online Banking Simulation' }}
+                            <td class="small">
+                                @if (($order->payment->method ?? '') === 'toyyibpay')
+                                    <span class="fw-semibold" style="color: #7E22CE;"><i class="bi bi-bank me-1"></i>ToyyibPay FPX</span>
+                                @elseif (($order->payment->method ?? '') === 'cod')
+                                    <span class="text-muted">Cash on Delivery</span>
+                                @elseif (($order->payment->method ?? '') === 'online_simulation')
+                                    <span class="text-muted">Simulation</span>
+                                @else
+                                    <span class="text-muted">{{ ucfirst($order->payment->method ?? 'N/A') }}</span>
+                                @endif
                             </td>
                             <td class="sci-price">RM {{ number_format($order->total_amount, 2) }}</td>
                             <td class="text-end">

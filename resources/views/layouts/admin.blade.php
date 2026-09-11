@@ -60,6 +60,13 @@
                     <span>Orders</span>
                 </a>
             </div>
+            <div class="admin-nav-item">
+                <a class="admin-nav-link {{ request()->routeIs('admin.einvoices.*') ? 'active' : '' }}" href="{{ route('admin.einvoices.index') }}">
+                    <i class="bi bi-patch-check-fill text-success"></i>
+                    <span>e-Invois LHDN</span>
+                    <span class="badge bg-success-subtle text-success ms-auto" style="font-size: 0.65rem;">MyInvois</span>
+                </a>
+            </div>
 
             <div class="admin-sidebar-section-title">Analytics & Control</div>
             @can('report.view')

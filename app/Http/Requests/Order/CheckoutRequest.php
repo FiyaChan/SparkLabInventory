@@ -24,7 +24,14 @@ class CheckoutRequest extends FormRequest
             // The server always recalculates the total from live cart +
             // product prices inside OrderService — this is what stops a
             // tampered request from checking out at an attacker-chosen price.
-            'payment_method' => ['required', Rule::in(['cod', 'online_simulation'])],
+            'payment_method' => ['required', Rule::in(['cod', 'online_simulation', 'toyyibpay'])],
+
+            // LHDN e-Invoice optional tax fields
+            'require_einvoice' => ['nullable', 'boolean'],
+            'buyer_tin' => ['nullable', 'string', 'max:30'],
+            'buyer_id_type' => ['nullable', 'string', 'max:20', Rule::in(['NRIC', 'BRN', 'PASSPORT', 'ARMY', 'GENERAL_PUBLIC'])],
+            'buyer_id_number' => ['nullable', 'string', 'max:30'],
+            'buyer_sst_no' => ['nullable', 'string', 'max:30'],
         ];
     }
 }

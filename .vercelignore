@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.vscode
+.env
+.phpunit.result.cache
+node_modules
+tests
+scratch
+phpunit.xml
+generate_excel_dictionary.py
+database_schema.sql

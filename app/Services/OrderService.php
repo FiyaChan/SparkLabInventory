@@ -13,7 +13,12 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
-    public function __construct(protected StockService $stockService) {}
+    public function __construct(
+        protected StockService $stockService,
+        protected ?EInvoiceService $eInvoiceService = null
+    ) {
+        $this->eInvoiceService = $eInvoiceService ?? app(EInvoiceService::class);
+    }
 
     /**
      * Converts a cart into an order. This is the single most important
@@ -33,14 +38,36 @@ class OrderService
         }
 
         return DB::transaction(function () use ($user, $cart, $shippingDetails, $paymentMethod) {
+            $buyerTin = $shippingDetails['buyer_tin'] ?? ($user->tin ?: 'EI00000000020');
+            $buyerIdType = $shippingDetails['buyer_id_type'] ?? ($user->id_type ?: ($buyerTin === 'EI00000000020' ? 'GENERAL_PUBLIC' : 'NRIC'));
+            $buyerIdNum = $shippingDetails['buyer_id_number'] ?? ($user->id_number ?: '000000000000');
+            $buyerSst = $shippingDetails['buyer_sst_no'] ?? ($user->sst_number ?: null);
+            $requireEinvoice = ! empty($shippingDetails['require_einvoice']);
+
+            // Auto-update user profile with tax details if newly provided
+            if (! empty($shippingDetails['buyer_tin']) && empty($user->tin)) {
+                $user->update([
+                    'tin' => $shippingDetails['buyer_tin'],
+                    'id_type' => $buyerIdType,
+                    'id_number' => $buyerIdNum,
+                    'sst_number' => $buyerSst,
+                ]);
+            }
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'order_number' => $this->generateOrderNumber(),
                 'status' => 'pending',
+                'source' => 'web',
                 'total_amount' => 0, // computed below, updated before commit
                 'shipping_name' => $shippingDetails['shipping_name'],
                 'shipping_phone' => $shippingDetails['shipping_phone'],
                 'shipping_address' => $shippingDetails['shipping_address'],
+                'buyer_tin' => $buyerTin,
+                'buyer_id_type' => $buyerIdType,
+                'buyer_id_number' => $buyerIdNum,
+                'buyer_sst_no' => $buyerSst,
+                'require_einvoice' => $requireEinvoice,
             ]);
 
             $total = 0;
@@ -86,19 +113,38 @@ class OrderService
 
             $order->update(['total_amount' => $total]);
 
+            $initialPaymentStatus = in_array($paymentMethod, ['cod', 'toyyibpay'], true) ? 'pending' : 'paid';
+
             Payment::create([
                 'order_id' => $order->id,
                 'method' => $paymentMethod,
                 // COD stays 'pending' until the courier collects payment on delivery.
-                // The simulated online gateway "succeeds" immediately for demo purposes —
-                // in a real integration this would instead be 'pending' until a
-                // webhook confirms payment.
-                'status' => $paymentMethod === 'cod' ? 'pending' : 'paid',
+                // ToyyibPay stays 'pending' until the customer completes FPX bank transfer.
+                // The simulated online gateway "succeeds" immediately for demo purposes.
+                'status' => $initialPaymentStatus,
                 'transaction_ref' => $paymentMethod === 'online_simulation'
                     ? 'SIM-'.Str::upper(Str::random(12))
                     : null,
                 'amount' => $total,
             ]);
+
+            // If payment succeeded immediately (e.g. online simulation), generate e-invoice now
+            if ($initialPaymentStatus === 'paid') {
+                try {
+                    $this->eInvoiceService->generateForOrder($order, [
+                        'buyer_tin' => $buyerTin,
+                        'buyer_id_type' => $buyerIdType,
+                        'buyer_id_value' => $buyerIdNum,
+                        'buyer_sst_no' => $buyerSst,
+                        'buyer_name' => $order->shipping_name,
+                        'buyer_phone' => $order->shipping_phone,
+                        'buyer_email' => $user->email,
+                        'buyer_address' => $order->shipping_address,
+                    ]);
+                } catch (\Throwable $e) {
+                    // Non-blocking for checkout transaction
+                }
+            }
 
             // Empty the cart only after everything above succeeded.
             $cart->items()->delete();
@@ -109,7 +155,7 @@ class OrderService
                 'total' => $total,
             ]);
 
-            return $order->fresh(['items.product', 'payment']);
+            return $order->fresh(['items.product', 'payment', 'eInvoice']);
         });
     }
 

@@ -193,7 +193,7 @@ class PosController extends Controller
     {
         $this->authorizePosAccess();
 
-        $order->load(['items.product', 'payment', 'user']);
+        $order->load(['items.product', 'payment', 'user', 'eInvoice']);
 
         return view('admin.pos.receipt', compact('order'));
     }
@@ -205,12 +205,12 @@ class PosController extends Controller
     {
         $this->authorizePosAccess();
 
-        $order->load(['items.product', 'payment', 'user']);
+        $order->load(['items.product', 'payment', 'user', 'eInvoice']);
 
         $pdf = Pdf::loadView('admin.pos.receipt', [
             'order' => $order,
             'isPdf' => true,
-        ])->setPaper([0, 0, 226.77, 600], 'portrait'); // 80mm width thermal paper
+        ])->setPaper([0, 0, 226.77, 650], 'portrait'); // 80mm width thermal paper
 
         return $pdf->download("receipt-{$order->order_number}.pdf");
     }

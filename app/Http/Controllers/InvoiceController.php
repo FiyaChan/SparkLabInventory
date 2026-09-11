@@ -19,10 +19,21 @@ class InvoiceController extends Controller
             403
         );
 
-        $order->load('items.product', 'payment', 'user');
+        $order->load('items.product', 'items.variation', 'payment', 'user', 'eInvoice');
+
+        // If order does not have an e-invoice record yet, generate one on-demand
+        if (! $order->eInvoice) {
+            try {
+                $eInvoiceService = app(\App\Services\EInvoiceService::class);
+                $eInvoiceService->generateForOrder($order);
+                $order->load('eInvoice');
+            } catch (\Throwable $e) {
+                // Ignore failure and continue rendering
+            }
+        }
 
         $pdf = Pdf::loadView('invoices.pdf', compact('order'));
 
-        return $pdf->download("invoice-{$order->order_number}.pdf");
+        return $pdf->download("einvoice-{$order->order_number}.pdf");
     }
 }
