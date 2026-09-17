@@ -30,14 +30,14 @@
     $calculatedColor = $textColor ?? ($theme === 'science' ? '#2E1065' : '#FFFFFF');
 @endphp
 
-<div class="d-inline-flex align-items-center gap-2 app-logo-container">
+<div class="d-inline-flex align-items-center justify-content-center w-100 app-logo-container">
     @if ($theme === 'admin')
-        {{-- Bahagian Admin: Paparkan Logo Syarikat --}}
+        {{-- Bahagian Admin: Paparkan Logo Syarikat (Centered) --}}
         @if ($logoPath)
             <img src="{{ $logoPath }}" alt="Company Logo" 
-                 style="max-height: 40px; max-width: 170px; height: auto; width: auto; object-fit: contain; display: block;">
+                 style="max-height: 46px; max-width: 170px; height: auto; width: auto; object-fit: contain; display: block; margin: 0 auto;">
         @else
-            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem; border-radius: 8px;">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem; border-radius: 8px; margin: 0 auto;">
                 <i class="bi bi-cpu-fill"></i>
             </div>
         @endif
