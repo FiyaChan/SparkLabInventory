@@ -30,9 +30,9 @@
     $calculatedColor = $textColor ?? ($theme === 'science' ? '#2E1065' : '#FFFFFF');
 @endphp
 
-<div class="d-inline-flex align-items-center justify-content-center w-100 app-logo-container">
-    @if ($theme === 'admin')
-        {{-- Bahagian Admin: Paparkan Logo Syarikat (Centered) --}}
+@if ($theme === 'admin')
+    {{-- Bahagian Admin: Paparkan Logo Syarikat (Centered & Clean) --}}
+    <div class="d-flex align-items-center justify-content-center w-100 app-logo-container">
         @if ($logoPath)
             <img src="{{ $logoPath }}" alt="Company Logo" 
                  style="max-height: 46px; max-width: 170px; height: auto; width: auto; object-fit: contain; display: block; margin: 0 auto;">
@@ -41,17 +41,20 @@
                 <i class="bi bi-cpu-fill"></i>
             </div>
         @endif
-    @else
-        {{-- Bahagian E-Commerce / Customer Store: Ikon Bag Shopping --}}
-        <div class="sci-logo-flask" style="{{ $size === 'sm' ? 'width: 32px; height: 32px; font-size: 1rem;' : ($size === 'lg' ? 'width: 50px; height: 50px; font-size: 1.6rem;' : 'width: 40px; height: 40px; font-size: 1.25rem;') }}">
+    </div>
+@else
+    {{-- Bahagian E-Commerce / Customer Store: Ikon Bag Shopping + SparkLab Kids Science --}}
+    <div class="d-inline-flex align-items-center app-logo-container" style="gap: 12px;">
+        <div class="sci-logo-flask flex-shrink-0" style="{{ $size === 'sm' ? 'width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px;' : ($size === 'lg' ? 'width: 50px; height: 50px; font-size: 1.6rem; border-radius: 14px;' : 'width: 42px; height: 42px; font-size: 1.3rem; border-radius: 12px;') }}">
             <i class="bi bi-bag-heart-fill" style="color: #FBBF24;"></i>
         </div>
 
         @if ($showText)
             <span class="sci-heading fw-bold" 
-                  style="{{ $size === 'sm' ? 'font-size: 0.95rem;' : ($size === 'lg' ? 'font-size: 1.45rem;' : 'font-size: 1.2rem;') }}; color: {{ $calculatedColor }};">
-                {{ config('app.name') }}
+                  style="{{ $size === 'sm' ? 'font-size: 0.95rem;' : ($size === 'lg' ? 'font-size: 1.45rem;' : 'font-size: 1.25rem;') }}; color: {{ $calculatedColor }}; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap;">
+                SparkLab <span style="font-weight: 600; opacity: 0.88; font-size: 0.88em;">Kids Science</span>
             </span>
         @endif
-    @endif
-</div>
+    </div>
+@endif
+
