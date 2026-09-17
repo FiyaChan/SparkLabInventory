@@ -7,7 +7,20 @@
 
 @php
     $logoPath = null;
-    foreach (['images/logo.png', 'images/logo.svg', 'images/logo.webp', 'images/logo.jpg'] as $path) {
+    $possiblePaths = [
+        'images/logo.png',
+        'images/logo.jpg',
+        'images/logo.jpeg',
+        'images/logo.svg',
+        'images/logo.webp',
+        'logo.png',
+        'logo.jpg',
+        'logo.jpeg',
+        'logo.svg',
+        'logo.webp'
+    ];
+
+    foreach ($possiblePaths as $path) {
         if (file_exists(public_path($path))) {
             $logoPath = asset($path);
             break;
@@ -19,17 +32,17 @@
 
 <div class="d-inline-flex align-items-center gap-2 app-logo-container">
     @if ($theme === 'admin')
-        {{-- Admin & Staff Area: Logo / Icon Only (Clean) --}}
+        {{-- Bahagian Admin: Paparkan Logo Syarikat --}}
         @if ($logoPath)
-            <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" 
-                 style="{{ $size === 'sm' ? 'height: 36px; max-width: 160px;' : ($size === 'lg' ? 'height: 52px;' : 'height: 42px;') }} object-fit: contain; background: transparent;">
+            <img src="{{ $logoPath }}" alt="Company Logo" 
+                 style="max-height: 40px; max-width: 170px; height: auto; width: auto; object-fit: contain; display: block;">
         @else
-            <div class="brand-icon" style="{{ $size === 'sm' ? 'width: 36px; height: 36px; font-size: 1.1rem;' : ($size === 'lg' ? 'width: 44px; height: 44px; font-size: 1.3rem;' : 'width: 38px; height: 38px; font-size: 1.15rem;') }}">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem; border-radius: 8px;">
                 <i class="bi bi-cpu-fill"></i>
             </div>
         @endif
     @else
-        {{-- E-Commerce Customer Store: Stylish Shopping Bag Icon --}}
+        {{-- Bahagian E-Commerce / Customer Store: Ikon Bag Shopping --}}
         <div class="sci-logo-flask" style="{{ $size === 'sm' ? 'width: 32px; height: 32px; font-size: 1rem;' : ($size === 'lg' ? 'width: 50px; height: 50px; font-size: 1.6rem;' : 'width: 40px; height: 40px; font-size: 1.25rem;') }}">
             <i class="bi bi-bag-heart-fill" style="color: #FBBF24;"></i>
         </div>
