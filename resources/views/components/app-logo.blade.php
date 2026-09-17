@@ -1,6 +1,6 @@
 @props([
     'size' => 'md',
-    'theme' => 'science', // 'science' or 'admin'
+    'theme' => 'science', // 'science' (ecommerce) or 'admin' (staff/admin)
     'showText' => true,
     'textColor' => null
 ])
@@ -18,19 +18,21 @@
 @endphp
 
 <div class="d-inline-flex align-items-center gap-2 app-logo-container">
-    @if ($logoPath)
-        <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" 
-             style="{{ $size === 'sm' ? 'height: 28px;' : ($size === 'lg' ? 'height: 48px;' : 'height: 38px;') }} object-fit: contain;">
-    @else
-        @if ($theme === 'admin')
+    @if ($theme === 'admin')
+        {{-- Admin & Staff: Use Company Logo Image or Admin Icon --}}
+        @if ($logoPath)
+            <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" 
+                 style="{{ $size === 'sm' ? 'height: 28px;' : ($size === 'lg' ? 'height: 48px;' : 'height: 38px;') }} object-fit: contain;">
+        @else
             <div class="brand-icon" style="{{ $size === 'sm' ? 'width: 30px; height: 30px; font-size: 0.95rem;' : ($size === 'lg' ? 'width: 44px; height: 44px; font-size: 1.3rem;' : 'width: 36px; height: 36px; font-size: 1.1rem;') }}">
                 <i class="bi bi-cpu-fill"></i>
             </div>
-        @else
-            <div class="sci-logo-flask" style="{{ $size === 'sm' ? 'width: 32px; height: 32px; font-size: 1rem;' : ($size === 'lg' ? 'width: 50px; height: 50px; font-size: 1.6rem;' : 'width: 40px; height: 40px; font-size: 1.25rem;') }}">
-                <i class="bi bi-stars" style="color: #FBBF24;"></i>
-            </div>
         @endif
+    @else
+        {{-- E-Commerce Customer Store: Stylish Shopping Bag Icon --}}
+        <div class="sci-logo-flask" style="{{ $size === 'sm' ? 'width: 32px; height: 32px; font-size: 1rem;' : ($size === 'lg' ? 'width: 50px; height: 50px; font-size: 1.6rem;' : 'width: 40px; height: 40px; font-size: 1.25rem;') }}">
+            <i class="bi bi-bag-heart-fill" style="color: #FBBF24;"></i>
+        </div>
     @endif
 
     @if ($showText)
