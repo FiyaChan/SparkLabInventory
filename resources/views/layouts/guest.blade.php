@@ -35,7 +35,7 @@
     </main>
 
     <footer class="text-center py-3 text-muted small" style="border-top: 1px solid rgba(255,255,255,0.06);">
-        &copy; {{ date('Y') }} Roboshop technologies SDN BHD &bull; Secure Inventory &amp; E-Commerce Management System. All rights reserved.
+        &copy; {{ date('Y') }} Roboshop Technologies SDN BHD &bull; Secure Inventory &amp; E-Commerce Management System. All rights reserved.
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>

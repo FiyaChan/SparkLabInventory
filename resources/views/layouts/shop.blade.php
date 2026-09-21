@@ -195,7 +195,7 @@
 
             <div class="pt-3 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-light opacity-75" style="border-color: rgba(255,255,255,0.15) !important;">
                 <div>
-                    &copy; {{ date('Y') }} Roboshop technologies SDN BHD. Science Experiment Kits for Kids.
+                    &copy; {{ date('Y') }} Roboshop Technologies SDN BHD. Science Experiment Kits for Kids.
                 </div>
                 <div class="d-flex gap-3">
                     <a href="{{ route('shop.index') }}" class="text-white">Shop Kits</a>

@@ -130,7 +130,7 @@
     <!-- Footer -->
     <footer class="sci-footer mt-auto">
         <div class="container text-center small py-3">
-            <p class="mb-1 text-white">&copy; {{ date('Y') }} Roboshop technologies SDN BHD. Science Experiment Kits for Kids.</p>
+            <p class="mb-1 text-white">&copy; {{ date('Y') }} Roboshop Technologies SDN BHD. Science Experiment Kits for Kids.</p>
             <div class="d-flex justify-content-center gap-3 text-light">
                 <a href="{{ route('shop.index') }}">Browse Kits</a>
                 <span>&bull;</span>
