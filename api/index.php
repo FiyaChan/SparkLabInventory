@@ -39,6 +39,11 @@ foreach ($envOverrides as $key => $value) {
     $_SERVER[$key] = $value;
 }
 
+if ((isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || getenv('VERCEL')) {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = 443;
+}
+
 // 3. Fallback SQLite in /tmp for standalone demonstration
 if (getenv('DB_CONNECTION') === 'sqlite' || ! getenv('DB_CONNECTION') || (isset($_ENV['DB_CONNECTION']) && $_ENV['DB_CONNECTION'] === 'sqlite')) {
     $sourceSqlite = __DIR__ . '/../database/database.sqlite';
