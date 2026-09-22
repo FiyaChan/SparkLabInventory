@@ -7,6 +7,8 @@
 // 1. Prepare temporary storage directory tree on /tmp (Vercel filesystem is read-only)
 $tmpDirs = [
     '/tmp/storage/app/public',
+    '/tmp/storage/app/public/products',
+    '/tmp/storage/app/private',
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/cache',
