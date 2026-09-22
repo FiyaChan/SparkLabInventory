@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF5FF" />
+      <stop offset="100%" stop-color="#F3E8FF" />
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#7E22CE" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" rx="16" fill="url(#bgGrad)" />
+
+  <!-- Grid / Science Doodles Background -->
+  <circle cx="60" cy="50" r="2" fill="#D8B4FE" />
+  <circle cx="340" cy="70" r="3" fill="#D8B4FE" />
+  <circle cx="320" cy="240" r="2.5" fill="#D8B4FE" />
+  <circle cx="70" cy="220" r="2" fill="#D8B4FE" />
+
+  <!-- Center Flask / Experiment Icon -->
+  <g transform="translate(140, 60)">
+    <!-- Flask Body -->
+    <path d="M48 20 L48 45 L20 100 A 10 10 0 0 0 28 114 L92 114 A 10 10 0 0 0 100 100 L72 45 L72 20 Z" 
+          fill="#FFFFFF" stroke="#7E22CE" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    
+    <!-- Flask Neck Lip -->
+    <path d="M40 20 L80 20" stroke="#7E22CE" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Liquid inside Flask -->
+    <path d="M30 96 L90 96 L94 104 A 6 6 0 0 1 89 110 L31 110 A 6 6 0 0 1 26 104 Z" 
+          fill="url(#primaryGrad)" />
+    
+    <!-- Bubbles -->
+    <circle cx="50" cy="80" r="4" fill="#EC4899" />
+    <circle cx="68" cy="65" r="3" fill="#9333EA" />
+    <circle cx="58" cy="45" r="2" fill="#A855F7" />
+
+    <!-- Sparkles -->
+    <path d="M105 30 Q105 40 115 40 Q105 40 105 50 Q105 40 95 40 Q105 40 105 30 Z" fill="url(#accentGrad)"/>
+    <path d="M12 40 Q12 46 18 46 Q12 46 12 52 Q12 46 6 46 Q12 46 12 40 Z" fill="#F59E0B"/>
+  </g>
+
+  <!-- Label Text -->
+  <text x="200" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#6B21A8" letter-spacing="0.5">
+    SPARKLAB KIDS SCIENCE
+  </text>
+  <text x="200" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="500" fill="#9333EA" opacity="0.8">
+    Experiment Kit Media
+  </text>
+</svg>

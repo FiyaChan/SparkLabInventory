@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
@@ -16,5 +17,18 @@ class ProductImage extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-	}
+    }
+
+    public function getUrlAttribute(): string
+    {
+        if (empty($this->path)) {
+            return asset('images/product-placeholder.svg');
+        }
+
+        if (str_starts_with($this->path, 'http://') || str_starts_with($this->path, 'https://') || str_starts_with($this->path, 'data:')) {
+            return $this->path;
+        }
+
+        return Storage::url($this->path);
+    }
 }

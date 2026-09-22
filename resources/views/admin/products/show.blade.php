@@ -20,7 +20,10 @@
                     <div class="row g-2">
                         @foreach ($product->images as $image)
                             <div class="col-6">
-                                <img src="{{ asset('storage/' . $image->path) }}" class="img-fluid rounded border" alt="{{ $product->name }}">
+                                <img src="{{ $image->url }}"
+                                     class="img-fluid rounded border"
+                                     alt="{{ $product->name }}"
+                                     onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                             </div>
                         @endforeach
                     </div>

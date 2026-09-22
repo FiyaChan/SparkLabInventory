@@ -22,7 +22,11 @@
                     <div class="carousel-inner">
                         @foreach ($product->images as $index => $image)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" style="background: #F3E8FF; min-height: 380px;">
-                                <img src="{{ Storage::url($image->path) }}" class="d-block w-100" style="max-height: 440px; object-fit: contain;" alt="{{ $product->name }}">
+                                <img src="{{ $image->url }}"
+                                     class="d-block w-100"
+                                     style="max-height: 440px; object-fit: contain;"
+                                     alt="{{ $product->name }}"
+                                     onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                             </div>
                         @endforeach
                     </div>
@@ -147,7 +151,10 @@
                     <div class="sci-card h-100 p-3 d-flex flex-column">
                         <div class="rounded-3 overflow-hidden mb-3" style="height: 150px; background: #F3E8FF;">
                             @if ($rel->primaryImage)
-                                <img src="{{ Storage::url($rel->primaryImage->path) }}" class="w-100 h-100 object-fit-cover" alt="{{ $rel->name }}">
+                                <img src="{{ $rel->primaryImage->url }}"
+                                     class="w-100 h-100 object-fit-cover"
+                                     alt="{{ $rel->name }}"
+                                     onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                             @else
                                 <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
                                     <i class="bi bi-stars fs-3" style="color: #7E22CE;"></i>

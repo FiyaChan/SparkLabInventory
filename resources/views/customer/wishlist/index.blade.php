@@ -31,7 +31,10 @@
                 <div class="sci-card h-100 d-flex flex-column">
                     <div class="position-relative overflow-hidden" style="height: 190px; background: #F3E8FF;">
                         @if ($product->primaryImage)
-                            <img src="{{ Storage::url($product->primaryImage->path) }}" class="w-100 h-100 object-fit-cover" alt="{{ $product->name }}">
+                            <img src="{{ $product->primaryImage->url }}"
+                                 class="w-100 h-100 object-fit-cover"
+                                 alt="{{ $product->name }}"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                         @else
                             <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
                                 <i class="bi bi-stars fs-2" style="color: #7E22CE;"></i>

@@ -174,8 +174,9 @@
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             @foreach ($product->images as $image)
                                 <div class="position-relative">
-                                    <img src="{{ Storage::url($image->path) }}" style="width: 72px; height: 72px; object-fit: cover;"
-                                         class="rounded border" alt="Product thumbnail">
+                                    <img src="{{ $image->url }}" style="width: 72px; height: 72px; object-fit: cover;"
+                                         class="rounded border" alt="Product thumbnail"
+                                         onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                                 </div>
                             @endforeach
                         </div>

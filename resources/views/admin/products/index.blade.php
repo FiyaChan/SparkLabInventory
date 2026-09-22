@@ -62,8 +62,11 @@
                     <tr>
                         <td>
                             @if ($product->primaryImage)
-                                <img src="{{ Storage::url($product->primaryImage->path) }}"
-                                     class="rounded border" style="width: 48px; height: 48px; object-fit: cover;" alt="{{ $product->name }}">
+                                <img src="{{ $product->primaryImage->url }}"
+                                     class="rounded border"
+                                     style="width: 48px; height: 48px; object-fit: cover;"
+                                     alt="{{ $product->name }}"
+                                     onerror="this.onerror=null; this.src='{{ asset('images/product-placeholder.svg') }}';">
                             @else
                                 <div class="rounded border bg-light d-flex align-items-center justify-content-center text-muted" style="width: 48px; height: 48px;">
                                     <i class="bi bi-image text-muted"></i>
