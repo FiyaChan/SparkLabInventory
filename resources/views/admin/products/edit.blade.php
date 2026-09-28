@@ -50,8 +50,14 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Category <span class="text-danger">*</span></label>
-                            <select name="category_id" class="form-select" required>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label mb-0">Category <span class="text-danger">*</span></label>
+                                <button type="button" class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-semibold" 
+                                        data-bs-toggle="modal" data-bs-target="#newCategoryModal" style="font-size: 0.8rem;">
+                                    <i class="bi bi-plus-circle-fill me-1"></i>+ New Category
+                                </button>
+                            </div>
+                            <select name="category_id" id="productCategorySelect" class="form-select" required>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @selected(old('category_id', $product->category_id) == $category->id)>
                                         {{ $category->name }}
@@ -212,10 +218,116 @@
         </div>
     </div>
 </form>
+
+<!-- Modal: Add New Category -->
+<div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6 fw-bold" id="newCategoryModalLabel">
+                    <i class="bi bi-folder-plus text-primary me-2"></i>Add New Category
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="newCategoryForm">
+                <div class="modal-body">
+                    <div id="categoryModalAlert" class="alert alert-danger d-none py-2 px-3 small"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Category Name <span class="text-danger">*</span></label>
+                        <input type="text" id="newCategoryName" class="form-control" placeholder="e.g. Robotics, Chemistry & Earth Science, Electronics" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description <span class="text-muted fw-normal small">(Optional)</span></label>
+                        <textarea id="newCategoryDescription" class="form-control" rows="2" placeholder="Brief description of products in this category..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btnSaveCategory" class="btn btn-sm btn-admin-primary">
+                        <span class="spinner-border spinner-border-sm d-none me-1" id="categorySpinner" role="status"></span>
+                        <i class="bi bi-check-lg me-1" id="categorySaveIcon"></i>Save Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+    // AJAX Category Creation
+    const newCategoryForm = document.getElementById('newCategoryForm');
+    if (newCategoryForm) {
+        const categorySelect = document.getElementById('productCategorySelect');
+        const categoryModalEl = document.getElementById('newCategoryModal');
+        const categoryModal = bootstrap.Modal.getOrCreateInstance(categoryModalEl);
+        const modalAlert = document.getElementById('categoryModalAlert');
+        const btnSave = document.getElementById('btnSaveCategory');
+        const spinner = document.getElementById('categorySpinner');
+        const saveIcon = document.getElementById('categorySaveIcon');
+
+        newCategoryForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            modalAlert.classList.add('d-none');
+            modalAlert.innerText = '';
+            
+            const nameInput = document.getElementById('newCategoryName');
+            const descInput = document.getElementById('newCategoryDescription');
+            const name = nameInput.value.trim();
+            const description = descInput ? descInput.value.trim() : '';
+
+            if (!name) {
+                modalAlert.innerText = 'Please enter a category name.';
+                modalAlert.classList.remove('d-none');
+                return;
+            }
+
+            btnSave.disabled = true;
+            spinner.classList.remove('d-none');
+            saveIcon.classList.add('d-none');
+
+            try {
+                const response = await fetch('{{ route('admin.categories.store') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const errorMessage = data.errors ? Object.values(data.errors).flat().join(' ') : (data.message || 'Failed to create category.');
+                    modalAlert.innerText = errorMessage;
+                    modalAlert.classList.remove('d-none');
+                    return;
+                }
+
+                // Add option and select it
+                const newOption = new Option(data.category.name, data.category.id, true, true);
+                categorySelect.add(newOption);
+                categorySelect.value = data.category.id;
+
+                // Reset and close modal
+                newCategoryForm.reset();
+                categoryModal.hide();
+            } catch (err) {
+                modalAlert.innerText = 'Network error. Please try again.';
+                modalAlert.classList.remove('d-none');
+            } finally {
+                btnSave.disabled = false;
+                spinner.classList.add('d-none');
+                saveIcon.classList.remove('d-none');
+            }
+        });
+    }
+
     let variationIndex = {{ $product->variations->count() }};
     const variationsTableBody = document.getElementById('variationsTableBody');
     const noVariationsNotice = document.getElementById('noVariationsNotice');

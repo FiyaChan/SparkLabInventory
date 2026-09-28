@@ -16,7 +16,9 @@
 {{-- Sales Statistics Cards --}}
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.reports.sales', ['from' => now()->toDateString(), 'to' => now()->toDateString()]) }}" 
+           class="admin-stat-card clickable card-primary text-decoration-none d-block h-100"
+           title="Click to view today's sales report">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Sales Today</div>
@@ -26,14 +28,17 @@
                     <i class="bi bi-calendar2-day"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">
-                <span class="text-success fw-semibold"><i class="bi bi-graph-up me-1"></i>Realtime</span> vs yesterday
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span><span class="text-success fw-semibold"><i class="bi bi-graph-up me-1"></i>Realtime</span> vs yesterday</span>
+                <span class="admin-stat-action text-primary">View <i class="bi bi-arrow-right"></i></span>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.reports.sales', ['from' => now()->startOfMonth()->toDateString(), 'to' => now()->toDateString()]) }}" 
+           class="admin-stat-card clickable card-success text-decoration-none d-block h-100"
+           title="Click to view this month's sales analytics">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Sales This Month</div>
@@ -43,14 +48,17 @@
                     <i class="bi bi-calendar-check"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
                 <span class="text-primary fw-semibold">Current Billing Period</span>
+                <span class="admin-stat-action text-success">View <i class="bi bi-arrow-right"></i></span>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.reports.sales') }}" 
+           class="admin-stat-card clickable card-purple text-decoration-none d-block h-100"
+           title="Click to view all-time sales & revenue analytics">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">All-Time Revenue</div>
@@ -60,14 +68,17 @@
                     <i class="bi bi-wallet2"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
                 <span class="text-muted fw-semibold">Total Gross Sales</span>
+                <span class="admin-stat-action text-purple" style="color: #8b5cf6;">View <i class="bi bi-arrow-right"></i></span>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" 
+           class="admin-stat-card clickable card-warning text-decoration-none d-block h-100"
+           title="Click to view pending orders requiring fulfillment">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Pending Orders</div>
@@ -77,19 +88,20 @@
                     <i class="bi bi-hourglass-split"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">
-                <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="text-warning text-decoration-none fw-semibold">
-                    Requires Fulfillment &rarr;
-                </a>
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span class="text-warning fw-semibold">Requires Fulfillment</span>
+                <span class="admin-stat-action text-warning">Orders <i class="bi bi-arrow-right"></i></span>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
 {{-- Inventory Overview Cards --}}
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.products.index') }}" 
+           class="admin-stat-card clickable card-primary text-decoration-none d-block h-100"
+           title="Click to open Product Catalog">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Active SKUs</div>
@@ -99,12 +111,17 @@
                     <i class="bi bi-tags"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">Active in catalog</div>
-        </div>
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span>Active in catalog</span>
+                <span class="admin-stat-action text-primary">Catalog <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.inventory.index') }}" 
+           class="admin-stat-card clickable card-success text-decoration-none d-block h-100"
+           title="Click to open Inventory Ledger">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Units in Warehouse</div>
@@ -114,12 +131,17 @@
                     <i class="bi bi-boxes"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">Total counted stock</div>
-        </div>
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span>Total counted stock</span>
+                <span class="admin-stat-action text-success">Stock <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.inventory.index', ['filter' => 'low_stock']) }}" 
+           class="admin-stat-card clickable card-danger text-decoration-none d-block h-100"
+           title="Click to view Low Stock items">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Low Stock Alerts</div>
@@ -129,12 +151,17 @@
                     <i class="bi bi-exclamation-octagon"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">Below reorder threshold</div>
-        </div>
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span>Below reorder threshold</span>
+                <span class="admin-stat-action text-danger">Alerts <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="admin-stat-card">
+        <a href="{{ route('admin.inventory.index', ['filter' => 'out_of_stock']) }}" 
+           class="admin-stat-card clickable card-danger text-decoration-none d-block h-100"
+           title="Click to view Out of Stock items">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="admin-stat-label">Out of Stock</div>
@@ -144,8 +171,11 @@
                     <i class="bi bi-x-octagon-fill"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2">Depleted inventory items</div>
-        </div>
+            <div class="small text-muted mt-2 d-flex justify-content-between align-items-center">
+                <span>Depleted inventory items</span>
+                <span class="admin-stat-action text-danger">Restock <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 </div>
 

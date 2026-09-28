@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,10 @@ Route::middleware(['auth', 'role:admin|staff'])
     ->name('admin.')
     ->group(function () {
         Route::resource('products', ProductController::class);
+
+        // Category routes
+        Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::post('categories', [CategoryController::class, 'store'])->name('categories.store');
 
         Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::get('inventory/{product}', [InventoryController::class, 'show'])->name('inventory.show');

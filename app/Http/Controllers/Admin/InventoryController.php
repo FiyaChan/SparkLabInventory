@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StockMovementRequest;
 use App\Models\Product;
 use App\Services\StockService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
@@ -17,15 +18,43 @@ class InventoryController extends Controller
      * separate from the Product CRUD screens since staff use this daily
      * while only admins touch product CRUD.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Product::class);
 
+        $filter = $request->input('filter', $request->input('status'));
+        $search = $request->input('search');
+
         $products = Product::with(['inventory', 'category'])
             ->whereHas('inventory') // only products that have an inventory row
-            ->paginate(20);
+            ->when($filter === 'low_stock', function ($query) {
+                $query->whereHas('inventory', function ($q) {
+                    $q->where('quantity_on_hand', '>', 0)
+                      ->whereColumn('quantity_on_hand', '<=', 'reorder_level');
+                });
+            })
+            ->when($filter === 'out_of_stock', function ($query) {
+                $query->whereHas('inventory', function ($q) {
+                    $q->where('quantity_on_hand', '<=', 0);
+                });
+            })
+            ->when($filter === 'in_stock', function ($query) {
+                $query->whereHas('inventory', function ($q) {
+                    $q->whereColumn('quantity_on_hand', '>', 'reorder_level');
+                });
+            })
+            ->when($search, function ($query) use ($search) {
+                $term = "%{$search}%";
+                $query->where(function ($q) use ($term) {
+                    $q->where('name', 'like', $term)
+                      ->orWhere('sku', 'like', $term);
+                });
+            })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
-        return view('admin.inventory.index', compact('products'));
+        return view('admin.inventory.index', compact('products', 'filter', 'search'));
     }
 
     /**

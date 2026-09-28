@@ -13,6 +13,34 @@
     @endcan
 </div>
 
+<div class="admin-card mb-4">
+    <div class="admin-card-body">
+        <form method="GET" action="{{ route('admin.inventory.index') }}" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0"
+                           placeholder="Search SKU or product name..." value="{{ request('search') }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="filter" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Stock Levels</option>
+                    <option value="in_stock" @selected(request('filter') === 'in_stock')>In Stock (Healthy)</option>
+                    <option value="low_stock" @selected(request('filter') === 'low_stock')>Low Stock (At / Below Reorder Point)</option>
+                    <option value="out_of_stock" @selected(request('filter') === 'out_of_stock')>Out of Stock (0 units)</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-admin-primary flex-grow-1">Filter</button>
+                @if(request('search') || request('filter'))
+                    <a href="{{ route('admin.inventory.index') }}" class="btn btn-admin-outline">Reset</a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="admin-card">
     <div class="table-responsive">
         <table class="table admin-table align-middle">

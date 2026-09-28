@@ -285,13 +285,66 @@ body.admin-body {
     padding: 1.25rem;
     position: relative;
     box-shadow: var(--admin-shadow-sm);
-    transition: all 0.2s ease;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+    color: var(--admin-text-main);
+    text-decoration: none;
 }
 
 .admin-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--admin-shadow-md);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
     border-color: #cbd5e1;
+    color: var(--admin-text-main);
+    text-decoration: none;
+}
+
+.admin-stat-card.clickable {
+    cursor: pointer;
+}
+
+.admin-stat-card.clickable.card-primary:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 12px 28px -5px rgba(37, 99, 235, 0.14), 0 8px 10px -6px rgba(37, 99, 235, 0.05);
+}
+
+.admin-stat-card.clickable.card-success:hover {
+    border-color: #86efac;
+    box-shadow: 0 12px 28px -5px rgba(16, 185, 129, 0.14), 0 8px 10px -6px rgba(16, 185, 129, 0.05);
+}
+
+.admin-stat-card.clickable.card-warning:hover {
+    border-color: #fde047;
+    box-shadow: 0 12px 28px -5px rgba(245, 158, 11, 0.14), 0 8px 10px -6px rgba(245, 158, 11, 0.05);
+}
+
+.admin-stat-card.clickable.card-danger:hover {
+    border-color: #fca5a5;
+    box-shadow: 0 12px 28px -5px rgba(239, 68, 68, 0.14), 0 8px 10px -6px rgba(239, 68, 68, 0.05);
+}
+
+.admin-stat-card.clickable.card-purple:hover {
+    border-color: #c4b5fd;
+    box-shadow: 0 12px 28px -5px rgba(139, 92, 246, 0.14), 0 8px 10px -6px rgba(139, 92, 246, 0.05);
+}
+
+.admin-stat-card.clickable:hover .admin-stat-icon {
+    transform: scale(1.08) rotate(2deg);
+}
+
+.admin-stat-action {
+    font-size: 0.72rem;
+    font-weight: 600;
+    opacity: 0.75;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.admin-stat-card.clickable:hover .admin-stat-action {
+    opacity: 1;
+    transform: translateX(3px);
 }
 
 .admin-stat-icon {
@@ -302,6 +355,7 @@ body.admin-body {
     align-items: center;
     justify-content: center;
     font-size: 1.25rem;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
 }
 
 .admin-stat-icon.primary { background: #eff6ff; color: #2563eb; }
