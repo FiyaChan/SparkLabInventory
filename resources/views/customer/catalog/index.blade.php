@@ -71,7 +71,7 @@
         <!-- Product Cards Grid -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             @forelse ($products as $product)
-                @php $qty = $product->inventory->quantity_on_hand ?? 0; @endphp
+                @php $totalStock = $product->total_stock; @endphp
                 <div class="col">
                     <div class="sci-card h-100 d-flex flex-column">
                         <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center" style="height: 200px; background: #FAF5FF;">
@@ -86,11 +86,16 @@
                                     <span class="small fw-bold" style="color: #7E22CE;">Experiment Kit Box</span>
                                 </div>
                             @endif
-                            <div class="position-absolute top-0 end-0 p-2">
-                                @if ($qty <= 0)
+                            <div class="position-absolute top-0 end-0 p-2 d-flex flex-column align-items-end gap-1">
+                                @if ($totalStock <= 0)
                                     <span class="sci-badge sci-badge-danger">Sold Out</span>
                                 @else
-                                    <span class="sci-badge sci-badge-purple">{{ $qty }} In Stock</span>
+                                    <span class="sci-badge sci-badge-purple">{{ $totalStock }} In Stock</span>
+                                @endif
+                                @if ($product->variations->isNotEmpty())
+                                    <span class="sci-badge sci-badge-cyan" style="font-size: 0.65rem;">
+                                        <i class="bi bi-layers-fill"></i> {{ $product->variations->count() }} Variants
+                                    </span>
                                 @endif
                             </div>
                             @if($product->category)
@@ -112,7 +117,7 @@
 
                             <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center" style="border-color: #EDE9FE !important;">
                                 <div>
-                                    <span class="sci-price">RM {{ number_format($product->price, 2) }}</span>
+                                    <span class="sci-price" style="font-size: 1.05rem;">{{ $product->formatted_price }}</span>
                                 </div>
                                 <a href="{{ route('shop.show', $product) }}" class="btn btn-sci-outline btn-sm">
                                     <i class="bi bi-eye"></i> View Kit

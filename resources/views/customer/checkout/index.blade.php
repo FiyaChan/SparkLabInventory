@@ -136,9 +136,14 @@
                     <div class="d-flex justify-content-between align-items-center pb-2 border-bottom" style="border-color: #EDE9FE !important;">
                         <div>
                             <div class="fw-bold text-dark small">{{ $item->product->name }}</div>
-                            <small class="text-muted">RM {{ number_format($item->product->price, 2) }} &times; {{ $item->quantity }} items</small>
+                            @if ($item->variation)
+                                <div class="small fw-semibold mt-0.5" style="color: #7E22CE; font-size: 0.75rem;">
+                                    <i class="bi bi-layers-half me-1"></i>{{ $item->variation->name }}
+                                </div>
+                            @endif
+                            <small class="text-muted">RM {{ number_format($item->unit_price, 2) }} &times; {{ $item->quantity }} items</small>
                         </div>
-                        <span class="sci-price small">RM {{ number_format($item->quantity * $item->product->price, 2) }}</span>
+                        <span class="sci-price small">RM {{ number_format($item->subtotal, 2) }}</span>
                     </div>
                 @endforeach
             </div>

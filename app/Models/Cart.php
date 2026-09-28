@@ -23,6 +23,6 @@ class Cart extends Model
     // Computed total — kept out of the DB to avoid stale/duplicated data
     public function getTotalAttribute(): float
     {
-        return $this->items->sum(fn (CartItem $item) => $item->quantity * $item->product->price);
+        return (float) $this->items->sum(fn (CartItem $item) => $item->subtotal);
     }
 }

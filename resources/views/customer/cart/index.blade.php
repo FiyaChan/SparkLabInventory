@@ -50,25 +50,34 @@
                                 <tr>
                                     <td>
                                         <div class="fw-bold fs-6" style="color: #1E1B4B;">{{ $item->product->name }}</div>
-                                        <small class="text-muted">Kit SKU: <code class="p-1 rounded" style="background: #F1F5F9; color: #475569;">{{ $item->product->sku }}</code></small>
+                                        @if ($item->variation)
+                                            <div class="mt-1">
+                                                <span class="badge px-2 py-1" style="background: rgba(126,34,206,0.1); color: #7E22CE; font-weight: 600; font-size: 0.75rem; border: 1px solid rgba(126,34,206,0.2);">
+                                                    <i class="bi bi-layers-half me-1"></i>{{ $item->variation->name }}
+                                                </span>
+                                            </div>
+                                            <small class="text-muted d-block mt-1">SKU: <code class="p-1 rounded" style="background: #F1F5F9; color: #475569;">{{ $item->variation->sku ?? $item->product->sku }}</code></small>
+                                        @else
+                                            <small class="text-muted d-block mt-1">Kit SKU: <code class="p-1 rounded" style="background: #F1F5F9; color: #475569;">{{ $item->product->sku }}</code></small>
+                                        @endif
                                     </td>
-                                    <td class="fw-semibold">RM {{ number_format($item->product->price, 2) }}</td>
+                                    <td class="fw-semibold">RM {{ number_format($item->unit_price, 2) }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('cart.update', $item->product) }}" class="d-flex gap-1">
+                                        <form method="POST" action="{{ route('cart.update', $item->id) }}" class="d-flex gap-1">
                                             @csrf
                                             @method('PATCH')
                                             <input type="number" name="quantity" value="{{ $item->quantity }}" min="1"
-                                                   max="{{ $item->product->inventory->quantity_on_hand ?? 0 }}"
+                                                   max="{{ $item->max_available_stock }}"
                                                    class="sci-form-control form-control form-control-sm text-center">
                                             <button class="btn btn-sci-outline btn-sm px-2" title="Update Quantity">
                                                 <i class="bi bi-arrow-clockwise"></i>
                                             </button>
                                         </form>
                                     </td>
-                                    <td class="sci-price">RM {{ number_format($item->quantity * $item->product->price, 2) }}</td>
+                                    <td class="sci-price">RM {{ number_format($item->subtotal, 2) }}</td>
                                     <td class="text-end">
-                                        <form method="POST" action="{{ route('cart.destroy', $item->product) }}"
-                                              onsubmit="return confirm('Remove this kit from your box?');">
+                                        <form method="POST" action="{{ route('cart.destroy', $item->id) }}"
+                                              onsubmit="return confirm('Remove this item from your box?');">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-sci-secondary text-danger" title="Remove">

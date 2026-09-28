@@ -73,42 +73,70 @@ class OrderService
             $total = 0;
 
             foreach ($cart->items as $item) {
-                // Re-fetch the product fresh inside the transaction, with a row
-                // lock — the cart's eager-loaded $item->product could be a stale
-                // read from before this transaction started.
+                // Re-fetch the product fresh inside the transaction, with a row lock
                 $product = $item->product()->lockForUpdate()->first();
 
-                if (! $product->is_active) {
+                if (! $product || ! $product->is_active) {
                     throw ValidationException::withMessages([
-                        'cart' => "\"{$product->name}\" is no longer available.",
+                        'cart' => "\"{$item->product->name}\" is no longer available.",
                     ]);
                 }
 
-                // The price used is ALWAYS product.price read server-side right now —
-                // never a price submitted from the checkout form. This is what stops
-                // a tampered request from checking out at an attacker-chosen price.
-                $unitPrice = $product->price;
-                $subtotal = $unitPrice * $item->quantity;
+                $variation = null;
+                $variantName = null;
+                $unitPrice = (float) $product->price;
+
+                if ($item->variation_id) {
+                    $variation = \App\Models\ProductVariation::where('id', $item->variation_id)
+                        ->where('product_id', $product->id)
+                        ->where('is_active', true)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (! $variation) {
+                        throw ValidationException::withMessages([
+                            'cart' => "The selected variation for \"{$product->name}\" is no longer available.",
+                        ]);
+                    }
+
+                    if ($variation->stock < $item->quantity) {
+                        throw ValidationException::withMessages([
+                            'cart' => "Insufficient stock for \"{$product->name} - {$variation->name}\". Only {$variation->stock} available.",
+                        ]);
+                    }
+
+                    $unitPrice = (float) $variation->price;
+                    $variantName = $variation->name;
+
+                    // Deduct variation stock
+                    $variation->decrement('stock', $item->quantity);
+
+                    // Also decrement general inventory snapshot if available
+                    if ($product->inventory) {
+                        $product->inventory()->decrement('quantity_on_hand', min($product->inventory->quantity_on_hand, $item->quantity));
+                    }
+                } else {
+                    // Deduct stock through StockService so it's captured in the stock_movements audit ledger
+                    $this->stockService->recordMovement(
+                        $product,
+                        'stock_out',
+                        $item->quantity,
+                        "Order {$order->order_number}",
+                        $user
+                    );
+                }
+
+                $subtotal = round($unitPrice * $item->quantity, 2);
                 $total += $subtotal;
 
                 $order->items()->create([
                     'product_id' => $product->id,
+                    'variation_id' => $item->variation_id,
+                    'variant_name' => $variantName,
                     'quantity' => $item->quantity,
                     'unit_price' => $unitPrice,
                     'subtotal' => $subtotal,
                 ]);
-
-                // Deduct stock through StockService so it's captured in the
-                // stock_movements audit ledger like every other stock change —
-                // an order is just another kind of "stock_out". This also gets
-                // us the row-locking + negative-stock guard for free.
-                $this->stockService->recordMovement(
-                    $product,
-                    'stock_out',
-                    $item->quantity,
-                    "Order {$order->order_number}",
-                    $user
-                );
             }
 
             $order->update(['total_amount' => $total]);

@@ -68,4 +68,41 @@ class Product extends Model
         return $this->inventory
             && $this->inventory->quantity_on_hand <= $this->inventory->reorder_level;
     }
+
+    /**
+     * Standardized formatted price or price range (e.g. "RM 35.00 - RM 120.00").
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        $hasVars = $this->relationLoaded('variations') ? $this->variations->isNotEmpty() : $this->variations()->exists();
+
+        if ($hasVars) {
+            $vars = $this->relationLoaded('variations') ? $this->variations : $this->variations()->get();
+            $min = (float) $vars->min('price');
+            $max = (float) $vars->max('price');
+
+            if ($min !== $max) {
+                return 'RM ' . number_format($min, 2) . ' - RM ' . number_format($max, 2);
+            }
+
+            return 'RM ' . number_format($min, 2);
+        }
+
+        return 'RM ' . number_format($this->price, 2);
+    }
+
+    /**
+     * Total available physical stock across all variations or base inventory.
+     */
+    public function getTotalStockAttribute(): int
+    {
+        $hasVars = $this->relationLoaded('variations') ? $this->variations->isNotEmpty() : $this->variations()->exists();
+
+        if ($hasVars) {
+            $vars = $this->relationLoaded('variations') ? $this->variations : $this->variations()->get();
+            return (int) $vars->sum('stock');
+        }
+
+        return (int) ($this->inventory->quantity_on_hand ?? 0);
+    }
 }

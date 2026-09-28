@@ -22,7 +22,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $cart = $this->cartService->getOrCreateCart(Auth::user());
-        $cart->load('items.product.inventory');
+        $cart->load(['items.product.inventory', 'items.variation']);
 
         if ($cart->items->isEmpty()) {
             return redirect()->route('cart.index')->with('status', 'Your cart is empty.');

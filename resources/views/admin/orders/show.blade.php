@@ -38,8 +38,15 @@
                             <tr>
                                 <td>
                                     <div class="fw-semibold">{{ $item->product->name ?? $item->product_name ?? 'Deleted Item' }}</div>
+                                    @if(!empty($item->variant_name))
+                                        <div class="mt-1">
+                                            <span class="badge" style="background: rgba(126,34,206,0.1); color: #7E22CE; font-size: 0.72rem; border: 1px solid rgba(126,34,206,0.2);">
+                                                <i class="bi bi-layers-half me-1"></i>{{ $item->variant_name }}
+                                            </span>
+                                        </div>
+                                    @endif
                                     @if($item->product)
-                                        <small class="text-muted">SKU: {{ $item->product->sku }}</small>
+                                        <small class="text-muted d-block mt-1">SKU: {{ $item->variation?->sku ?? $item->product->sku }}</small>
                                     @endif
                                 </td>
                                 <td class="text-center fw-bold">{{ $item->quantity }}</td>

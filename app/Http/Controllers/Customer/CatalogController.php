@@ -11,7 +11,7 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::with(['primaryImage', 'category', 'inventory'])
+        $products = Product::with(['primaryImage', 'category', 'inventory', 'variations'])
             ->where('is_active', true)
             ->when($request->filled('search'), function ($query) use ($request) {
                 // Parameterized 'where...like' via Eloquent — the search term is
@@ -46,9 +46,10 @@ class CatalogController extends Controller
         // that shouldn't be purchasable.
         abort_unless($product->is_active, 404);
 
-        $product->load(['images', 'category', 'inventory']);
+        $product->load(['images', 'category', 'inventory', 'variations']);
 
-        $related = Product::where('category_id', $product->category_id)
+        $related = Product::with(['primaryImage', 'category', 'inventory', 'variations'])
+            ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
             ->limit(4)

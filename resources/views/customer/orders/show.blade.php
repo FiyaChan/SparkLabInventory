@@ -45,10 +45,17 @@
                                             <span class="text-muted">{{ $item->product_name ?? 'Science Kit' }}</span>
                                         @endif
                                     </div>
+                                    @if (!empty($item->variant_name))
+                                        <div class="mt-1">
+                                            <span class="badge px-2 py-0.5" style="background: rgba(126,34,206,0.1); color: #7E22CE; font-weight: 600; font-size: 0.72rem; border: 1px solid rgba(126,34,206,0.2);">
+                                                <i class="bi bi-layers-half me-1"></i>{{ $item->variant_name }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </td>
-                                <td class="text-end text-muted">RM {{ number_format($item->price, 2) }}</td>
+                                <td class="text-end text-muted">RM {{ number_format($item->unit_price, 2) }}</td>
                                 <td class="text-center fw-bold">{{ $item->quantity }}</td>
-                                <td class="text-end sci-price">RM {{ number_format($item->quantity * $item->price, 2) }}</td>
+                                <td class="text-end sci-price">RM {{ number_format($item->subtotal, 2) }}</td>
                             </tr>
                         @endforeach
                         <tr>

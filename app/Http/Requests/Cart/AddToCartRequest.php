@@ -18,6 +18,7 @@ class AddToCartRequest extends FormRequest
             // POSTing an arbitrary/nonexistent id and causing a null-pointer
             // error deeper in the app.
             'product_id' => ['required', 'integer', 'exists:products,id'],
+            'variation_id' => ['nullable', 'integer', 'exists:product_variations,id'],
 
             // Hard cap of 100 per add — reasonable business limit, and also
             // blocks a scripted abuse case of someone posting quantity=999999999
