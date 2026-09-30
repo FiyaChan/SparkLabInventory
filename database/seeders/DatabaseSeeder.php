@@ -15,11 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleAndPermissionSeeder::class);
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            RoleAndPermissionSeeder::class,
+            ProductVariationSeeder::class,
         ]);
+
+        $testCustomer = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test Explorer',
+                'password' => \Illuminate\Support\Facades\Hash::make('Password123!'),
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]
+        );
+        $testCustomer->assignRole('customer');
     }
 }
