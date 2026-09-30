@@ -132,4 +132,49 @@ class CartTest extends TestCase
             ->assertSee('Robotics Science Kit')
             ->assertSee('Deluxe Edition');
     }
+
+    public function test_customer_can_update_cart_item_quantity(): void
+    {
+        $this->actingAs($this->customerUser)
+            ->post(route('cart.store'), [
+                'product_id' => $this->product->id,
+                'variation_id' => $this->variation1->id,
+                'quantity' => 2,
+            ]);
+
+        $item = $this->customerUser->cart->items()->first();
+
+        $response = $this->actingAs($this->customerUser)
+            ->patch(route('cart.update', $item->id), [
+                'quantity' => 5,
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('status', 'Cart updated.');
+
+        $this->assertEquals(5, $item->fresh()->quantity);
+    }
+
+    public function test_customer_can_remove_item_from_cart(): void
+    {
+        $this->actingAs($this->customerUser)
+            ->post(route('cart.store'), [
+                'product_id' => $this->product->id,
+                'variation_id' => $this->variation1->id,
+                'quantity' => 2,
+            ]);
+
+        $item = $this->customerUser->cart->items()->first();
+        $this->assertNotNull($item);
+
+        $response = $this->actingAs($this->customerUser)
+            ->delete(route('cart.destroy', $item->id));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('status', 'Item removed from cart.');
+
+        $this->assertDatabaseMissing('cart_items', [
+            'id' => $item->id,
+        ]);
+    }
 }

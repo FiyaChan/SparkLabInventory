@@ -61,7 +61,7 @@ class CartController extends Controller
 
     public function destroy($item)
     {
-        $cart = $this->getOrCreateCart(Auth::user());
+        $cart = $this->cartService->getOrCreateCart(Auth::user());
 
         $cartItemId = null;
         if ($item instanceof CartItem) {
