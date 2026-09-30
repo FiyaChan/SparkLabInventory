@@ -18,6 +18,12 @@ CREATE TABLE users (
     id                BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name              VARCHAR(255) NOT NULL,
     email             VARCHAR(255) NOT NULL UNIQUE,
+    phone             VARCHAR(30) NULL,
+    address           TEXT NULL,
+    tin               VARCHAR(30) NULL,
+    id_type           VARCHAR(20) NULL DEFAULT 'NRIC',
+    id_number         VARCHAR(30) NULL,
+    sst_number        VARCHAR(30) NULL,
     email_verified_at TIMESTAMP NULL DEFAULT NULL,
     password          VARCHAR(255) NOT NULL,          -- bcrypt hash, never plaintext
     remember_token    VARCHAR(100) NULL,
@@ -158,15 +164,17 @@ CREATE TABLE carts (
 ) ENGINE=InnoDB;
 
 CREATE TABLE cart_items (
-    id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    cart_id    BIGINT UNSIGNED NOT NULL,
-    product_id BIGINT UNSIGNED NOT NULL,
-    quantity   INT UNSIGNED NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NULL DEFAULT NULL,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
+    id           BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    cart_id      BIGINT UNSIGNED NOT NULL,
+    product_id   BIGINT UNSIGNED NOT NULL,
+    variation_id BIGINT UNSIGNED NULL DEFAULT NULL,
+    quantity     INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at   TIMESTAMP NULL DEFAULT NULL,
+    updated_at   TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    UNIQUE KEY uniq_cart_product (cart_id, product_id)  -- no duplicate product rows in same cart
+    FOREIGN KEY (variation_id) REFERENCES product_variations(id) ON DELETE SET NULL,
+    UNIQUE KEY uniq_cart_product_variation (cart_id, product_id, variation_id)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

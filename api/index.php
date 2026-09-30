@@ -51,8 +51,10 @@ if (getenv('DB_CONNECTION') === 'sqlite' || ! getenv('DB_CONNECTION') || (isset(
     $sourceSqlite = __DIR__ . '/../database/database.sqlite';
     $targetSqlite = '/tmp/database.sqlite';
 
-    if (file_exists($sourceSqlite) && ! file_exists($targetSqlite)) {
-        @copy($sourceSqlite, $targetSqlite);
+    if (file_exists($sourceSqlite)) {
+        if (! file_exists($targetSqlite) || filemtime($sourceSqlite) > filemtime($targetSqlite)) {
+            @copy($sourceSqlite, $targetSqlite);
+        }
     }
     
     if (file_exists($targetSqlite)) {

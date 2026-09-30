@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'id_number',
         'sst_number',
         'phone',
+        'address',
     ];
 
     // Never allow these to be mass-assigned even by mistake —

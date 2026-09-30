@@ -61,11 +61,15 @@ class ProductController extends Controller
         // atomically — if image storage fails partway through, the product
         // row is rolled back too, rather than leaving an orphaned half-created product.
         $product = DB::transaction(function () use ($validated, $request) {
+            $slug = ! empty($validated['slug'])
+                ? $validated['slug']
+                : (Str::slug($validated['name'] ?? 'product') . '-' . Str::lower(Str::random(6)));
+
             $product = Product::create([
                 'category_id' => $validated['category_id'],
                 'sku' => $validated['sku'],
                 'name' => $validated['name'],
-                'slug' => $validated['slug'],
+                'slug' => $slug,
                 'description' => $validated['description'] ?? null,
                 'price' => $validated['price'],
                 'cost_price' => $validated['cost_price'] ?? null,

@@ -131,7 +131,7 @@ class LhdnEInvoiceTest extends TestCase
     {
         // Add to cart
         $this->actingAs($this->customerUser)
-            ->post(route('cart.add'), [
+            ->post(route('cart.store'), [
                 'product_id' => $this->product->id,
                 'quantity' => 1,
             ]);
@@ -185,7 +185,7 @@ class LhdnEInvoiceTest extends TestCase
 
         $response->assertStatus(200)
             ->assertSee('LHDN MyInvois Validation Portal')
-            ->assertSee('Valid &amp; Verified Document', false)
+            ->assertSee('Valid & Verified Document', false)
             ->assertSee($eInvoice->irbm_unique_id)
             ->assertSee('IG98765432010');
     }
