@@ -51,21 +51,22 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Movement Type <span class="text-danger">*</span></label>
-                        <select name="type" class="form-select" required>
-                            <option value="stock_in">Stock In (Purchase / Restock)</option>
-                            <option value="stock_out">Stock Out (Damaged / Written Off)</option>
-                            <option value="adjustment">Stock Adjustment (Audit Correction)</option>
+                        <select name="type" id="movementTypeSelect" class="form-select" required onchange="updateMovementForm()">
+                            <option value="stock_in" @selected(old('type') === 'stock_in')>Stock In (Add to Stock)</option>
+                            <option value="stock_out" @selected(old('type') === 'stock_out')>Stock Out (Remove from Stock)</option>
+                            <option value="adjustment" @selected(old('type') === 'adjustment')>Stock Adjustment (Set Exact Physical Count)</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Quantity <span class="text-danger">*</span></label>
-                        <input type="number" name="quantity" min="1" class="form-control" placeholder="e.g. 50" required>
+                        <label class="form-label" id="quantityLabel">Quantity to Add <span class="text-danger">*</span></label>
+                        <input type="number" name="quantity" id="quantityInput" min="1" class="form-control" value="{{ old('quantity') }}" placeholder="e.g. 50" required>
+                        <div class="form-text small text-muted" id="quantityHelp">Units to add to current stock (Current: {{ $product->inventory->quantity_on_hand ?? 0 }}).</div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Reason / Reference <span class="text-danger">*</span></label>
-                        <input type="text" name="reason" class="form-control" placeholder="e.g. PO #8892 or Q3 Physical Audit" required>
+                        <input type="text" name="reason" class="form-control" value="{{ old('reason') }}" placeholder="e.g. PO #8892 or Physical Audit Count" required>
                     </div>
 
                     <button type="submit" class="btn btn-admin-primary w-100">
@@ -100,9 +101,13 @@
                             <tr>
                                 <td class="small text-muted">{{ $movement->created_at->format('d M Y, H:i') }}</td>
                                 <td>
-                                    <span class="admin-badge {{ $movement->quantity >= 0 ? 'success' : 'warning' }}">
-                                        {{ str_replace('_', ' ', strtoupper($movement->type)) }}
-                                    </span>
+                                    @if ($movement->type === 'stock_in')
+                                        <span class="admin-badge success">STOCK IN</span>
+                                    @elseif ($movement->type === 'stock_out')
+                                        <span class="admin-badge danger">STOCK OUT</span>
+                                    @else
+                                        <span class="admin-badge info">ADJUSTMENT</span>
+                                    @endif
                                 </td>
                                 <td class="text-center fw-bold {{ $movement->quantity >= 0 ? 'text-success' : 'text-danger' }}">
                                     {{ $movement->quantity >= 0 ? '+' : '' }}{{ $movement->quantity }}
@@ -129,4 +134,32 @@
         </div>
     </div>
 </div>
+
+<script>
+function updateMovementForm() {
+    const type = document.getElementById('movementTypeSelect').value;
+    const label = document.getElementById('quantityLabel');
+    const input = document.getElementById('quantityInput');
+    const help = document.getElementById('quantityHelp');
+    const current = {{ (int) ($product->inventory->quantity_on_hand ?? 0) }};
+
+    if (type === 'adjustment') {
+        label.innerHTML = 'New Actual Physical Stock Count <span class="text-danger">*</span>';
+        input.min = '0';
+        input.placeholder = `e.g. ${current}`;
+        help.innerText = `Inventory will be updated to exactly this number of units (Current: ${current}).`;
+    } else if (type === 'stock_out') {
+        label.innerHTML = 'Quantity to Remove <span class="text-danger">*</span>';
+        input.min = '1';
+        input.placeholder = 'e.g. 5';
+        help.innerText = `Units to deduct from current stock (Current: ${current}).`;
+    } else {
+        label.innerHTML = 'Quantity to Add <span class="text-danger">*</span>';
+        input.min = '1';
+        input.placeholder = 'e.g. 50';
+        help.innerText = `Units to add to current stock (Current: ${current}).`;
+    }
+}
+document.addEventListener('DOMContentLoaded', updateMovementForm);
+</script>
 @endsection

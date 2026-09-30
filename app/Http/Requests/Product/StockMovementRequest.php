@@ -14,13 +14,13 @@ class StockMovementRequest extends FormRequest
 
     public function rules(): array
     {
+        $minQuantity = $this->input('type') === 'adjustment' ? 0 : 1;
+
         return [
             'type' => ['required', Rule::in(['stock_in', 'stock_out', 'adjustment'])],
 
-            // Always a positive number in the form; the service decides the sign
-            // based on 'type' — keeps the UI intuitive ("add 50 units") while the
-            // ledger internally stores signed deltas for easy SUM() calculations.
-            'quantity' => ['required', 'integer', 'min:1'],
+            // Always a positive number in the form; for adjustments, 0 is allowed (e.g. write-off to zero)
+            'quantity' => ['required', 'integer', "min:{$minQuantity}"],
 
             'reason' => ['required', 'string', 'max:255'],
         ];

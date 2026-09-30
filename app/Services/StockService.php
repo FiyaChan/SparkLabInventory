@@ -38,19 +38,39 @@ class StockService
                 ]);
             }
 
-            // Convert the always-positive form input into a signed delta based on type.
-            $delta = match ($type) {
-                'stock_in' => $quantity,
-                'stock_out', 'adjustment' => -$quantity,
-                default => throw ValidationException::withMessages(['type' => 'Invalid movement type.']),
-            };
+            // Calculate delta and new quantity based on movement type
+            if ($type === 'adjustment') {
+                if ($quantity < 0) {
+                    throw ValidationException::withMessages([
+                        'quantity' => 'Stock quantity cannot be negative.',
+                    ]);
+                }
+                $newQuantity = $quantity;
+                $delta = $newQuantity - $inventory->quantity_on_hand;
+            } elseif ($type === 'stock_in') {
+                if ($quantity <= 0) {
+                    throw ValidationException::withMessages([
+                        'quantity' => 'Stock In quantity must be at least 1.',
+                    ]);
+                }
+                $delta = $quantity;
+                $newQuantity = $inventory->quantity_on_hand + $delta;
+            } elseif ($type === 'stock_out') {
+                if ($quantity <= 0) {
+                    throw ValidationException::withMessages([
+                        'quantity' => 'Stock Out quantity must be at least 1.',
+                    ]);
+                }
+                $delta = -$quantity;
+                $newQuantity = $inventory->quantity_on_hand + $delta;
 
-            $newQuantity = $inventory->quantity_on_hand + $delta;
-
-            if ($newQuantity < 0) {
-                throw ValidationException::withMessages([
-                    'quantity' => "Cannot remove {$quantity} units — only {$inventory->quantity_on_hand} in stock.",
-                ]);
+                if ($newQuantity < 0) {
+                    throw ValidationException::withMessages([
+                        'quantity' => "Cannot remove {$quantity} units — only {$inventory->quantity_on_hand} in stock.",
+                    ]);
+                }
+            } else {
+                throw ValidationException::withMessages(['type' => 'Invalid movement type.']);
             }
 
             $inventory->update(['quantity_on_hand' => $newQuantity]);
@@ -95,21 +115,10 @@ class StockService
 
     /**
      * Sets an absolute quantity (used for full stock-takes / audits) rather than
-     * a relative delta. Internally still goes through recordMovement() as an
-     * 'adjustment' so it's captured in the ledger the same way.
+     * a relative delta. Internally goes through recordMovement() as an 'adjustment'.
      */
     public function setAbsoluteQuantity(Product $product, int $newQuantity, string $reason, User $performedBy): StockMovement
     {
-        $inventory = Inventory::where('product_id', $product->id)->first();
-        $current = $inventory->quantity_on_hand ?? 0;
-        $diff = $newQuantity - $current;
-
-        if ($diff === 0) {
-            throw ValidationException::withMessages(['quantity' => 'New quantity matches current stock — no adjustment needed.']);
-        }
-
-        return $diff > 0
-            ? $this->recordMovement($product, 'stock_in', $diff, $reason, $performedBy)
-            : $this->recordMovement($product, 'stock_out', abs($diff), $reason, $performedBy);
+        return $this->recordMovement($product, 'adjustment', $newQuantity, $reason, $performedBy);
     }
 }
