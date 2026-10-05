@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -45,16 +46,20 @@ class DashboardController extends Controller
     /**
      * Inventory Overview — headline counts an admin scans in 2 seconds:
      * total SKUs, total units held, and how many are below reorder level.
+     * Excludes soft-deleted products so discarded stock doesn't inflate stats.
      */
     protected function inventoryOverview(): array
     {
         return [
             'total_products' => Product::where('is_active', true)->count(),
-            'total_units' => DB::table('inventory')->sum('quantity_on_hand'),
-            'low_stock_count' => DB::table('inventory')
+            'total_units' => (int) Inventory::whereHas('product')->sum('quantity_on_hand'),
+            'low_stock_count' => Inventory::whereHas('product')
+                ->where('quantity_on_hand', '>', 0)
                 ->whereColumn('quantity_on_hand', '<=', 'reorder_level')
                 ->count(),
-            'out_of_stock_count' => DB::table('inventory')->where('quantity_on_hand', 0)->count(),
+            'out_of_stock_count' => Inventory::whereHas('product')
+                ->where('quantity_on_hand', '<=', 0)
+                ->count(),
         ];
     }
 
